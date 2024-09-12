@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public Page<User> listByPage(int pageOffset, String sortField, String sortDir) {
+    public Page<User> listByPage(int pageOffset, String sortField, String sortDir, String keyword) {
         Sort sort = Sort.by(sortField);
         sort = (sortDir.equals("asc")) ? sort.ascending() : sort.descending();
 
@@ -39,7 +39,11 @@ public class UserServiceImpl implements UserService{
 
         // Do DB có record bắt đầu từ index 0 -> ta phải trừ đi 1
         Pageable pageable = PageRequest.of(pageNumber-1,USER_NUMBER_PER_PAGE,sort);
-        return userRepository.findAll(pageable);
+
+        if(keyword!=null)
+            return userRepository.searchByKeyword(keyword, pageable);
+        else
+            return userRepository.findAll(pageable);
     }
 
     @Override

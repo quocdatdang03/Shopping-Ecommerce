@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.annotation.Rollback;
 
 import javax.persistence.EntityManager;
@@ -113,5 +116,16 @@ public class UserRepositoryTests {
         int id =9;
         boolean enabled=true;
         userRepository.updateEnabledStatus(id,enabled);
+    }
+
+    @Test
+    public void searchWithKeyword()
+    {
+        String keyword = "bruce";
+        Pageable page = PageRequest.of(0, 5);
+        List<User> users = userRepository.searchByKeyword(keyword, page).getContent();
+
+        users.forEach(item -> System.out.println(item));
+        Assertions.assertThat(users.size()).isGreaterThan(0);
     }
 }

@@ -10,6 +10,7 @@ import com.shoppingbackend.admin.util.FileUploadUtil;
 import org.apache.tomcat.util.http.fileupload.FileUpload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -45,7 +46,8 @@ public class UserController {
     {
         String sortField = "id";
         String sortDir = "asc";
-        return listByPage(1,sortField,sortDir, model);
+        String keyword = null;
+        return listByPage(1,sortField,sortDir, keyword, model);
     }
 
     // PAGINATION
@@ -54,10 +56,11 @@ public class UserController {
             @PathVariable("pageNumber") int pageNumber,
             @RequestParam(value = "sortField") String sortField,
             @RequestParam(value = "sortDir") String sortDir,
+            @RequestParam(value = "keyword", required = false) String keyword,
             Model model)
     {
-        // Handle paginate :
-        Page<User> page = userService.listByPage(pageNumber, sortField,sortDir);
+        // Handle paginate and sorting and search by keyword  :
+        Page<User> page = userService.listByPage(pageNumber, sortField,sortDir,keyword);
 
         // get information for pagination:
         int totalPages = page.getTotalPages();
@@ -86,6 +89,8 @@ public class UserController {
         model.addAttribute("sortDir", sortDir);
         model.addAttribute("reverseSortDir", reverseSortDir);
 
+        // information for search by keyword:
+        model.addAttribute("keyword", keyword);
 
         return "user/user";
     }
@@ -152,7 +157,8 @@ public class UserController {
 //
         redirectAttributes.addFlashAttribute("message", "The User has been saved successfully");
 
-        return "redirect:/users";
+        String redirectUrlToAffectedUser = "redirect:/users/page/1?sortField=id&sortDir=asc&keyword="+user.getEmail();
+        return redirectUrlToAffectedUser;
     }
 
     // DELETE
@@ -174,7 +180,12 @@ public class UserController {
                                       RedirectAttributes redirectAttributes)
     {
         userService.updateUserEnabledStatus(id,enabledStatus);
-        redirectAttributes.addFlashAttribute("message", "Enabled Status of User (id:"+id+") has been updated successfully!");
+        String message;
+        if(enabledStatus==true)
+            message = "Activate User (id:"+id+") successfully!";
+        else
+            message = "Deactivate User (id:"+id+") successfully!";
+        redirectAttributes.addFlashAttribute("message", message);
         return "redirect:/users";
     }
 

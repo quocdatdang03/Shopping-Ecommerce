@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface UserService {
     public List<User> findAll();
-    public Page<User> listByPage(int pageOffset, String sortField, String sortDir);
+    public Page<User> listByPage(int pageOffset, String sortField, String sortDir, String keyword);
     public User getUserById(Integer id) throws UserNotFoundException;
     public User save(User user);
     public boolean isEmailUnique(Integer id, String email);
