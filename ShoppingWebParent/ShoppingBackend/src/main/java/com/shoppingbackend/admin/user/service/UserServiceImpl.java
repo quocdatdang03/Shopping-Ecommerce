@@ -4,6 +4,10 @@ import com.shopping.common.entity.User;
 import com.shoppingbackend.admin.user.exception.UserNotFoundException;
 import com.shoppingbackend.admin.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +16,7 @@ import java.util.NoSuchElementException;
 
 @Service
 public class UserServiceImpl implements UserService{
+    public static final int USER_NUMBER_PER_PAGE = 5;
 
     @Autowired
     private UserRepository userRepository;
@@ -23,6 +28,18 @@ public class UserServiceImpl implements UserService{
     @Override
     public List<User> findAll() {
         return (List<User>) userRepository.findAll();
+    }
+
+    @Override
+    public Page<User> listByPage(int pageOffset, String sortField, String sortDir) {
+        Sort sort = Sort.by(sortField);
+        sort = (sortDir.equals("asc")) ? sort.ascending() : sort.descending();
+
+        int pageNumber = pageOffset;
+
+        // Do DB có record bắt đầu từ index 0 -> ta phải trừ đi 1
+        Pageable pageable = PageRequest.of(pageNumber-1,USER_NUMBER_PER_PAGE,sort);
+        return userRepository.findAll(pageable);
     }
 
     @Override

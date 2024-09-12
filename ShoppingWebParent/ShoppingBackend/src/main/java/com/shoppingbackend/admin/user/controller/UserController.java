@@ -4,10 +4,12 @@ import com.shopping.common.entity.Role;
 import com.shopping.common.entity.User;
 import com.shoppingbackend.admin.user.exception.UserNotFoundException;
 import com.shoppingbackend.admin.user.service.RoleServiceImpl;
+import com.shoppingbackend.admin.user.service.UserService;
 import com.shoppingbackend.admin.user.service.UserServiceImpl;
 import com.shoppingbackend.admin.util.FileUploadUtil;
 import org.apache.tomcat.util.http.fileupload.FileUpload;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -39,10 +41,52 @@ public class UserController {
     }
 
     @GetMapping("")
-    public String showListUser(Model model)
+    public String showFirstListUser(Model model)
     {
-        List<User> users = userService.findAll();
+        String sortField = "id";
+        String sortDir = "asc";
+        return listByPage(1,sortField,sortDir, model);
+    }
+
+    // PAGINATION
+    @GetMapping("/page/{pageNumber}")
+    public String listByPage(
+            @PathVariable("pageNumber") int pageNumber,
+            @RequestParam(value = "sortField") String sortField,
+            @RequestParam(value = "sortDir") String sortDir,
+            Model model)
+    {
+        // Handle paginate :
+        Page<User> page = userService.listByPage(pageNumber, sortField,sortDir);
+
+        // get information for pagination:
+        int totalPages = page.getTotalPages();
+        int userNumberPerPage = page.getNumberOfElements(); // Lấy ra số item hiển thị trên 1 trang
+        long totalUsers = page.getTotalElements();
+        int firstPageNumber = ((pageNumber-1)*userService.USER_NUMBER_PER_PAGE)+1;
+        int lastPageNumber = pageNumber*userService.USER_NUMBER_PER_PAGE;
+        if(lastPageNumber>totalUsers)
+            lastPageNumber = (int) totalUsers;
+
+        // information for sorting:
+        String reverseSortDir = sortDir.equals("asc") ? "desc" : "asc";
+
+
+        List<User> users = page.getContent();
+
+        model.addAttribute("firstPageNumber", firstPageNumber);
+        model.addAttribute("lastPageNumber", lastPageNumber);
+        model.addAttribute("totalUsers", totalUsers);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("pageNumber", pageNumber);
         model.addAttribute("userList", users);
+
+        // information for sorting:
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("reverseSortDir", reverseSortDir);
+
+
         return "user/user";
     }
 

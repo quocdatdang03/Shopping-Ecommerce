@@ -4,12 +4,13 @@ import com.shopping.common.entity.User;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
 
 @Repository
-public interface UserRepository extends CrudRepository<User, Integer> {
+public interface UserRepository extends PagingAndSortingRepository<User, Integer> {
     public User findByEmail(String email);
     public Integer countById(int id);
 
@@ -17,4 +18,5 @@ public interface UserRepository extends CrudRepository<User, Integer> {
     @Modifying // indicating this query for update or delete
     @Transactional
     public void updateEnabledStatus(Integer id, boolean enabledStatus);
+
 }
