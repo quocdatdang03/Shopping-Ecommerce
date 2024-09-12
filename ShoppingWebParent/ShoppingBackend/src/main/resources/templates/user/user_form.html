@@ -69,7 +69,11 @@
 
     <div class="container mt-5">
         <h1 class="mb-5">Manager User | [[${pageTitle}]]</h1>
-        <form th:action="@{/users/save}" th:object="${user}" method="POST" class="mx-auto border p-3 rounded" onsubmit="return checkEmailUnique(this)" style="max-width: 700px;">
+        <form th:action="@{/users/save}"
+              enctype="multipart/form-data"
+              th:object="${user}" method="POST"
+              class="mx-auto border p-3 rounded" onsubmit="return checkEmailUnique(this)" style="max-width: 700px;"
+        >
             <!-- Field ID-->
             <input type="hidden" id="id" th:field="*{id}" />
             <div class="row row-cols-1 row-cols-sm-2">
@@ -103,13 +107,24 @@
                     >
                     </option>
                 </select>
-
             </div>
             <div class="form-check mb-3">
                 <label class="form-check-label" for="enabled">
                    Enabled
                 </label>
                 <input th:field="*{enabled}" class="form-check-input" type="checkbox" value="" id="enabled">
+            </div>
+            <div class="mb-3">
+                <!-- Hidden field to store photos -->
+                <input type="hidden" th:field="*{photos}" />
+                <label class="form-label" for="photoFile">
+                    Photo
+                </label>
+                <input class="form-control" name="inputFileImage" accept="image/png, image/jpeg" type="file" value="" id="photoFile">
+                <!--image photo-->
+                <div class="d-flex justify-content-end mt-3">
+                    <img id="imgPhoto" class="img-thumbnail w-25 h-auto" th:src="@{${user.photoImagePath}}" th:alt="${user.photos!=null ? user.photos : 'default user image'}"/>
+                </div>
             </div>
             <div class="row mt-3">
                 <div class="col-6">
@@ -147,6 +162,7 @@
     </div>
     <script type="text/javascript">
         // using Jquery:
+        /* Check Email Unique */
         function checkEmailUnique(form)
         {
             var url = "[[@{/users/check_email}]]"; // using thymeleaf để tạo URL:
@@ -183,6 +199,42 @@
             // })
             return false;
         }
+
+
+        $(document).ready(function () {
+
+            // Handle Change Image when upload input type file:
+            $('#photoFile').change(function() {
+                // Lấy ra file size
+                var fileSize = this.files[0].size
+                alert(fileSize)
+                // check if fileSize > 1MB -> not accept:
+                if(fileSize>1048567)
+                {
+                    this.setCustomValidity("file size must less than 1MB!")
+                    this.reportValidity()
+                }
+                else {
+                    this.setCustomValidity("")
+                    showImageThumbnail(this)
+                }
+            })
+
+        })
+
+        // Handle Change Image when upload input type file:
+        function showImageThumbnail(fileInput) {
+            // Lấy ra đối tượng FileList :
+            var file = fileInput.files[0];
+
+            var fileReader = new FileReader();
+
+            fileReader.onload = function (e) {
+                $('#imgPhoto').attr("src", e.target.result)
+            }
+            fileReader.readAsDataURL(file)
+        }
+
     </script>
 </body>
 </html>

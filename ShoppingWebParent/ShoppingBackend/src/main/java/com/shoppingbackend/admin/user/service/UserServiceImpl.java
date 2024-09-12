@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService{
 
     // SAVE : CREATE OR EDIT USER
     @Override
-    public void save(User user) {
+    public User save(User user) {
 
         // if in case Create user:
         if(user.getId()==null)
@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService{
             }
         }
 
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     // DELETE USER:

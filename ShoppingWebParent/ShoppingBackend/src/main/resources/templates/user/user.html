@@ -107,7 +107,11 @@
                 <tbody>
                 <tr th:each="item : ${userList}">
                     <td th:text="${item.id}"></td>
-                    <td></td>
+                    <td>
+                        <div class="d-flex justify-content-center">
+                            <img class="img-thumbnail img-fluid" th:src="@{${item.photoImagePath}}" style="min-width:100px; max-width: 100px; height: 100px; object-fit: cover; object-position: center;" />
+                        </div>
+                    </td>
                     <td th:text="${item.firstName}"></td>
                     <td th:text="${item.lastName}"></td>
                     <td th:text="${item.email}"></td>
@@ -120,7 +124,7 @@
                             <i class="fa-solid fa-circle fa-2x text-secondary"></i>
                         </a>
                     </td>
-                    <td class="d-xl-flex justify-content-xl-around">
+                    <td class="">
                         <a class="text-decoration-none" th:href="@{'/users/edit/' + ${item.id}}">
                             <i class="fa-sharp fa-solid fa-pen-to-square fa-2x text-info"></i>
                         </a>
@@ -161,6 +165,8 @@
         // INITIALIZE TOOLTIPS OF BOOTSTRAP:
         const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
         const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
+
         // using jquery:
         $(document).ready(function (){
             $('.btn-delete').on('click', function (e){

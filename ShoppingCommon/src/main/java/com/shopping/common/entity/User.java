@@ -56,4 +56,14 @@ public class User {
         this.roles.add(role);
     }
 
+    // Đánh dấu @Transient để không liên kết nó với bất kì column nào trong DB
+    @Transient
+    public String getPhotoImagePath()
+    {
+        if(this.getId() == null || this.getPhotos()==null)
+            return "/images/default-user.png";
+        else
+            return "/user-images/"+this.getId()+"/"+this.getPhotos();
+    }
+
 }
