@@ -29,6 +29,14 @@
     </properties>
     <dependencies>
         <!-- Module ShoppingBackend will inherit dependencies from ShoppingWebParent-->
+
+        <!-- Lib for Export CSV -->
+        <dependency>
+            <groupId>net.sf.supercsv</groupId>
+            <artifactId>super-csv</artifactId>
+            <version>2.4.0</version>
+        </dependency>
+
     </dependencies>
 
     <build>

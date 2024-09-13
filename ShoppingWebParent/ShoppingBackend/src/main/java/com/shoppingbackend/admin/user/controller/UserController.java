@@ -4,6 +4,7 @@ import com.shopping.common.entity.Role;
 import com.shopping.common.entity.User;
 import com.shoppingbackend.admin.user.exception.UserNotFoundException;
 import com.shoppingbackend.admin.user.service.RoleServiceImpl;
+import com.shoppingbackend.admin.user.service.UserCsvExporter;
 import com.shoppingbackend.admin.user.service.UserService;
 import com.shoppingbackend.admin.user.service.UserServiceImpl;
 import com.shoppingbackend.admin.util.FileUploadUtil;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
@@ -32,6 +34,9 @@ public class UserController {
 
     @Autowired
     private RoleServiceImpl roleService;
+
+    @Autowired
+    private UserCsvExporter userCsvExporter;
 
     // Tạo dữ liệu chung cho Model của các Request Handler
     @ModelAttribute("roleList")
@@ -154,7 +159,6 @@ public class UserController {
         }
 
 
-//
         redirectAttributes.addFlashAttribute("message", "The User has been saved successfully");
 
         String redirectUrlToAffectedUser = "redirect:/users/page/1?sortField=id&sortDir=asc&keyword="+user.getEmail();
@@ -187,6 +191,16 @@ public class UserController {
             message = "Deactivate User (id:"+id+") successfully!";
         redirectAttributes.addFlashAttribute("message", message);
         return "redirect:/users";
+    }
+
+    // EXPORT List User to CSV:
+    @GetMapping("/export/csv")
+    public void exportToCsv(HttpServletResponse response) throws IOException {
+        // get all list users:
+        List<User> users = userService.findAll();
+
+        // handle export list user to csv file:
+        userCsvExporter.export(users, response);
     }
 
 
