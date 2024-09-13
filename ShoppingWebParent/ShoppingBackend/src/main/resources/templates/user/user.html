@@ -91,9 +91,16 @@
                <input type="hidden" name="sortDir" th:value="${sortDir}" />
 
                <div class="d-flex align-items-center">
-                   <input type="text" class="form-control w-auto" name="keyword" placeholder="Enter keyword to search..."/>
+                   <div class="input-group w-auto">
+                        <input type="text" class="form-control" id="searchInput" name="keyword" th:value="${keyword!=null ? keyword : ''}" placeholder="Enter keyword to search..."/>
+                        <button type="button" class="btn btn-outline-secondary" id="btnClearTextSearch">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                   </div>
                     <div class="ms-2 w-auto">
-                        <button type="submit" class="col btn btn-success">Search</button>
+                        <button type="submit" class="col btn btn-success">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
                         <button type="button" class="col btn btn-secondary ms-1" onclick="handleSeeAllUsers()">See All</button>
                     </div>
                </div>
@@ -269,6 +276,7 @@
 
         // using jquery:
         $(document).ready(function (){
+            // Handle show delete confirm modal:
             $('.btn-delete').on('click', function (e){
                 // Ngăn hành vi href của thẻ <a>
                 e.preventDefault();
@@ -285,6 +293,13 @@
                 console.log(linkDelete)
                 // set value cho attribute href của #btn-confirm-delete  là link để delete :
                 $('#btn-confirm-delete').attr("href", linkDelete)
+            })
+
+            // Handle clear text search:
+            var searchInput = $('#searchInput');
+            $('#btnClearTextSearch').on('click', function () {
+                searchInput.val('')
+                searchInput.focus()
             })
         })
 
