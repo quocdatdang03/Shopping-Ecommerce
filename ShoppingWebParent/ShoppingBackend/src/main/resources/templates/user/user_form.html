@@ -96,7 +96,7 @@
                 <label for="password" class="form-label">Password</label>
                 <!-- Trong -->
                 <input th:if="${user.id==null}" th:field="*{password}" type="password" class="form-control" id="password" required minlength="5" maxlength="20">
-                <input th:if="${user.id!=null}" th:field="*{password}" type="password" class="form-control" id="password" minlength="5" maxlength="20">
+                <input th:if="${user.id!=null}" th:field="*{password}" type="password" class="form-control" id="password" minlength="5" maxlength="20" placeholder="Leave blank to keep current password">
             </div>
             <div class="mb-3">
                 <label for="roles" class="form-label">Roles</label>
