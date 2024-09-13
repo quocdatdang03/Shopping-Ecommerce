@@ -14,25 +14,16 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class UserCsvExporter {
+public class UserCsvExporter extends AbstractUserExporter{
     public void export(List<User> listUser, HttpServletResponse response) throws IOException {
         // Tạo tên file export theo format sau:
         // users_YYYY-MM-DD_HH-MM-SS.csv , E.g. users_2024-09-13_08-30-12.csv
-
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
-        // convert dateFormat to String:
-        String timestamp = dateFormat.format(new Date());
-        // create file name csv in above format:
-        String fileName = "users_"+timestamp+".csv";
-
-        response.setContentType("text/csv");
-        String headerKey = "Content-Disposition";
-        String headerValue = "attachment; filename="+fileName;
-        response.setHeader(headerKey, headerValue);
+        super.setContentTypeAndExtensionFile("text/csv", ".csv", response);
 
         ICsvBeanWriter csvBeanWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE);
 
         // header value:
+        // we'll export all fields of user exclude : password, photos
         String[] csvHeader = {"User ID", "E-mail", "First Name", "Last Name", "Roles", "Enabled"};
         // fields mapping with User object:
         String[] fieldsMapping = {"id", "email", "firstName", "lastName", "roles", "enabled"};

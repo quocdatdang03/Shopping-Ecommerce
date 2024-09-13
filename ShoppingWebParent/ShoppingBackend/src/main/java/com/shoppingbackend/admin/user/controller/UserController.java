@@ -3,10 +3,7 @@ package com.shoppingbackend.admin.user.controller;
 import com.shopping.common.entity.Role;
 import com.shopping.common.entity.User;
 import com.shoppingbackend.admin.user.exception.UserNotFoundException;
-import com.shoppingbackend.admin.user.service.RoleServiceImpl;
-import com.shoppingbackend.admin.user.service.UserCsvExporter;
-import com.shoppingbackend.admin.user.service.UserService;
-import com.shoppingbackend.admin.user.service.UserServiceImpl;
+import com.shoppingbackend.admin.user.service.*;
 import com.shoppingbackend.admin.util.FileUploadUtil;
 import org.apache.tomcat.util.http.fileupload.FileUpload;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +34,10 @@ public class UserController {
 
     @Autowired
     private UserCsvExporter userCsvExporter;
+
+    @Autowired
+    private UserExcelExporter userExcelExporter;
+
 
     // Tạo dữ liệu chung cho Model của các Request Handler
     @ModelAttribute("roleList")
@@ -201,6 +202,16 @@ public class UserController {
 
         // handle export list user to csv file:
         userCsvExporter.export(users, response);
+    }
+
+    // EXPORT List User to CSV:
+    @GetMapping("/export/excel")
+    public void exportToExcel(HttpServletResponse response) throws IOException {
+        // get all list users:
+        List<User> users = userService.findAll();
+
+        // handle export list user to excel file:
+        userExcelExporter.export(users, response);
     }
 
 
