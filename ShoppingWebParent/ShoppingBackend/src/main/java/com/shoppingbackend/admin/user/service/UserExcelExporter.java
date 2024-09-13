@@ -109,6 +109,7 @@ public class UserExcelExporter extends AbstractUserExporter{
         // users_YYYY-MM-DD_HH-MM-SS.csv , E.g. users_2024-09-13_08-30-12.csv
         super.setContentTypeAndExtensionFile("application/octet-stream", ".xlsx", response);
 
+        // we'll export all fields of user exclude : password, photos
         createHeaderLine();
         createValuesLine(listUser);
 

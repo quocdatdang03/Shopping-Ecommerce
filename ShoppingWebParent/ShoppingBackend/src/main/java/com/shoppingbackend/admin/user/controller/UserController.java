@@ -38,6 +38,9 @@ public class UserController {
     @Autowired
     private UserExcelExporter userExcelExporter;
 
+    @Autowired
+    private UserPdfExporter userPdfExporter;
+
 
     // Tạo dữ liệu chung cho Model của các Request Handler
     @ModelAttribute("roleList")
@@ -212,6 +215,16 @@ public class UserController {
 
         // handle export list user to excel file:
         userExcelExporter.export(users, response);
+    }
+
+    // EXPORT List User to PDF:
+    @GetMapping("/export/pdf")
+    public void exportToPdf(HttpServletResponse response) throws IOException {
+        // get all list users:
+        List<User> users = userService.findAll();
+
+        // handle export list user to pdf file:
+        userPdfExporter.export(users, response);
     }
 
 
