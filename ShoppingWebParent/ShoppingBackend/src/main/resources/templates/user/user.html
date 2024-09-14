@@ -131,39 +131,19 @@
         <div th:if="${totalPages > 0}" class="table-responsive">
             <table class="table table-primary table-striped table-hover table-bordered">
                 <thead class="table-info">
-                <th>
-                    <a th:href="@{'/users/page/'+${pageNumber}+'?sortField=id'+'&sortDir='+${sortField=='id' ? reverseSortDir : sortDir} + ${keyword!=null ? '&keyword='+ keyword : ''}}">
-                        User ID
-                        <i th:if="${sortField=='id'}" th:class="${sortDir=='asc' ? 'fa-solid fa-sort-up' : 'fa-solid fa-sort-down'}"></i>
-                    </a>
+                <th th:replace="/fragment/fragments :: link_title_user('id', 'User ID')">
                 </th>
                 <th>
                     Photos
                 </th>
-                <th>
-                    <a th:href="@{'/users/page/'+${pageNumber}+'?sortField=firstName'+'&sortDir='+${sortField=='firstName' ? reverseSortDir : sortDir} + ${keyword!=null ? '&keyword='+ keyword : ''}}">
-                        First Name
-                        <i th:if="${sortField=='firstName'}" th:class="${sortDir=='asc' ? 'fa-solid fa-sort-up' : 'fa-solid fa-sort-down'}"></i>
-                    </a>
+                <th th:replace="/fragment/fragments :: link_title_user('firstName', 'First Name')">
                 </th>
-                <th>
-                    <a th:href="@{'/users/page/'+${pageNumber}+'?sortField=lastName'+'&sortDir='+${sortField=='lastName' ? reverseSortDir : sortDir} + ${keyword!=null ? '&keyword='+ keyword : ''}}">
-                        LastName
-                        <i th:if="${sortField=='lastName'}" th:class="${sortDir=='asc' ? 'fa-solid fa-sort-up' : 'fa-solid fa-sort-down'}"></i>
-                    </a>
+                <th th:replace="/fragment/fragments :: link_title_user('lastName', 'Last Name')">
                 </th>
-                <th>
-                    <a th:href="@{'/users/page/'+${pageNumber}+'?sortField=email'+'&sortDir='+${sortField=='email' ? reverseSortDir : sortDir} + ${keyword!=null ? '&keyword='+ keyword : ''}}">
-                        E-mail
-                        <i th:if="${sortField=='email'}" th:class="${sortDir=='asc' ? 'fa-solid fa-sort-up' : 'fa-solid fa-sort-down'}"></i>
-                    </a>
+                <th th:replace="/fragment/fragments :: link_title_user('email', 'E-mail')">
                 </th>
                 <th>Roles</th>
-                <th>
-                    <a th:href="@{'/users/page/'+${pageNumber}+'?sortField=enabled'+'&sortDir='+${sortField=='enabled' ? reverseSortDir : sortDir} + ${keyword!=null ? '&keyword='+ keyword : ''}}">
-                        Enabled
-                        <i th:if="${sortField=='enabled'}" th:class="${sortDir=='asc' ? 'fa-solid fa-sort-up' : 'fa-solid fa-sort-down'}"></i>
-                    </a>
+                <th th:replace="/fragment/fragments :: link_title_user('enabled', 'Enabled')">
                 </th>
                 <th>Action</th>
                 </thead>
