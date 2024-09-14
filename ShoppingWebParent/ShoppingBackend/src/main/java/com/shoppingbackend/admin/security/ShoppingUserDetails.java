@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 // Custom implementation class of interface UserDetails
+// Mặc đinh thì khi authentication thành công thì class này sẽ được thể hiện bởi obj class Principal
 public class ShoppingUserDetails implements UserDetails {
     private User user;
 
@@ -65,4 +66,11 @@ public class ShoppingUserDetails implements UserDetails {
     public boolean isEnabled() {
         return user.isEnabled();
     }
+
+
+    public String getFullName() {
+        // Tạo method getFullName để getFullName của object User:
+        return this.user.getFirstName() +" "+this.user.getLastName();
+    }
+
 }

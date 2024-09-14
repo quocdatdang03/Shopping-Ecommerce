@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- meta tag for responsive for mobile phone -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
     <title>Login Page</title>
     <!-- boostrap -->
     <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
@@ -32,16 +34,21 @@
 </head>
 <body>
     <div class="container">
-        <div class="row">
-            <div class="col-sm-10 col-md-9 col-lg-5 mx-auto">
-                <div class="card border-0 shadow rounded-3 my-5">
-                    <div class="card-body p-4 p-sm-5">
-                        <h2 class="card-title text-center mb-5 fw-light fs-5">Sign In</h2>
+            <div class="mx-auto" style="max-width: 700px;">
+                <div class="border-0 shadow rounded-3 my-5">
+                    <div class="p-4 p-sm-5">
+                        <h2 class="text-center mb-5 fw-light fs-5">Sign In</h2>
                         <!-- Message Error -->
                         <!-- sử dụng error message authentication mặc định của Spring Security  -->
                         <div th:if="${param.error}">
-                            <div th:if="${session.SPRING_SECURITY_LAST_EXCEPTION!=null}" class="alert alert-danger">
-                                [[${session.SPRING_SECURITY_LAST_EXCEPTION.message}]]
+                            <div th:if="${session.SPRING_SECURITY_LAST_EXCEPTION!=null}" class="alert alert-danger d-flex align-items-center">
+                                <i class="me-2 fa-solid fa-triangle-exclamation"></i>
+                                <span th:if="${session.SPRING_SECURITY_LAST_EXCEPTION.message == 'Bad credentials'}">
+                                    Username or password is incorrect!
+                                </span>
+                                <span th:if="${session.SPRING_SECURITY_LAST_EXCEPTION.message == 'User is disabled'}">
+                                    Your account is disabled!
+                                </span>
                             </div>
                         </div>
                         <!-- sử dụng error message do ta tự định nghĩa (CustomAuthenticationUserHandler) -->
@@ -49,6 +56,15 @@
                             [[${session.authenticationErrorMessage}]]
                         </div>-->
                         <!-- End Message Error -->
+
+                        <!-- Message Logout-->
+                        <div th:if="${param.logout}" class="alert alert-primary d-flex align-items-center">
+                            <i class="me-2 fa-solid fa-circle-check"></i>
+                            <span>
+                                You have been logout successfully!
+                            </span>
+                        </div>
+                        <!-- End Message Logout-->
 
                         <!-- action /login với method post sẽ tự động được xử lý logic Login bởi Spring Security  -->
                         <form th:action="@{/login}" method="post">
@@ -86,6 +102,5 @@
                 </div>
             </div>
         </div>
-    </div>
 </body>
 </html>

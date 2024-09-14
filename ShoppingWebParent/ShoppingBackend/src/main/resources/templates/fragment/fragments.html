@@ -5,12 +5,12 @@
     <title>Fragment</title>
 </head>
 <body>
-    <!-- Fragment : link title header table user -->
-    <th th:fragment="link_title_user(fieldName, title)">
-        <a th:href="@{'/users/page/'+${pageNumber}+'?sortField='+${fieldName}+'&sortDir='+${sortField==fieldName ? reverseSortDir : sortDir} + ${keyword!=null ? '&keyword='+ keyword : ''}}">
-            [[${title}]]
-            <i th:if="${sortField==fieldName}" th:class="${sortDir=='asc' ? 'fa-solid fa-sort-up' : 'fa-solid fa-sort-down'}"></i>
-        </a>
-    </th>
+<!-- Fragment : link title header table user -->
+<th th:fragment="link_title_user(fieldName, title)">
+    <a th:href="@{'/users/page/'+${pageNumber}+'?sortField='+${fieldName}+'&sortDir='+${sortField==fieldName ? reverseSortDir : sortDir} + ${keyword!=null ? '&keyword='+ keyword : ''}}">
+        [[${title}]]
+        <i th:if="${sortField==fieldName}" th:class="${sortDir=='asc' ? 'fa-solid fa-sort-up' : 'fa-solid fa-sort-down'}"></i>
+    </a>
+</th>
 </body>
 </html>

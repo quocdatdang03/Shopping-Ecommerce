@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <!-- meta tag for responsive for mobile phone -->
@@ -65,6 +67,26 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" th:href="@{/settings}">Settings</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button">
+                           <!--
+                                <span th:text="${#authentication.name}">
+                                </span>
+                                <span sec:authentication="name">
+                                </span>
+                            -->
+                            <!-- principal refers tới obj class UserDetails (cụ thể là ShoppingUserDetails )-->
+                            <span sec:authentication="principal.fullName">
+                            </span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <!-- Hidden Form for logout-->
+                            <form th:action="@{/logout}" method="post" hidden="hidden" id="logoutForm">
+                                <input type="submit" value="Logout"/>
+                            </form>
+                            <li><a class="dropdown-item" href="#" id="btnLogout">Logout</a></li>
+                        </ul>
                     </li>
                 </ul>
             </div>
@@ -290,6 +312,13 @@
                 searchInput.val('')
                 searchInput.focus()
             })
+
+            // Handle Logout:
+            var formLogout = $('#logoutForm');
+            $('#btnLogout').on('click', function (e) {
+                e.preventDefault(); // Ngăn chặn load behavior khi click thẻ <a>
+                formLogout.submit();
+            })
         })
 
         // handle when click btn See All :
@@ -297,6 +326,7 @@
         {
             window.location = "[[@{/users}]]";
         }
+
 
     </script>
 </body>

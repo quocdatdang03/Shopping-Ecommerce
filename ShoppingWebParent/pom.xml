@@ -75,6 +75,13 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
+        <!-- Thymeleaf Extras SpringSecurity5 : Lib để sử dụng được 1 số object, method của Spring Security vào trong thymeleaf (vd obj của interface Authentication) -->
+        <!-- Lib này không phải là 1 phần của Thymeleaf core, nhưng nó hoàn toàn được support bởi thymeleaf team -->
+        <dependency>
+            <groupId>org.thymeleaf.extras</groupId>
+            <artifactId>thymeleaf-extras-springsecurity5</artifactId>
+        </dependency>
+
 
         <!-- Bootstrap -->
         <dependency>

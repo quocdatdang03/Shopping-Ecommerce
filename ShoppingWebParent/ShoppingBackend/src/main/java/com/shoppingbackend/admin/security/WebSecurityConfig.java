@@ -69,7 +69,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                                                 // nhưng bên form ta để name của input là email nên phải sửa lại tên param ở đây
                     .defaultSuccessUrl("/")
                     //.failureHandler(new CustomAuthenticationUserHandler()) // handle custom error message when authentication fail
-                    .permitAll();
+                    .permitAll()
+                .and()
+                .logout().permitAll(); // handle logout
     }
 
     @Override
