@@ -42,7 +42,11 @@ public class User {
     @Column(name="enabled",nullable = false)
     private boolean enabled;
 
-    @ManyToMany
+    // Chú ý để fetch là EAGER ở field roles của Entity User để tránh error LazyInitializationException
+    // -> Dữ liệu về roles của user sẽ được tải ngay lập tức cùng với user (E.g. userRepository.findByEmail(email); thì nó sẽ select join ể lấy dữ liệu từ cả hai bảng User và Role)
+    // Mặc định @ManyToMany có fetch là LAZY : tức là chỉ tải user khi load user còn khi thực sự gọi roles nó mới load roles
+    // (E.g. userRepository.findByEmail(email); thì nó sẽ chỉ select từ table user, chỉ khi ta gọi user.getRoles(); thì nó mới load từ table roles)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
