@@ -18,6 +18,8 @@ public class ShoppingUserDetailsService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
+    /*
+    // Cách 1: return UserDetails mặc định của Spring Security:
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         // Custom lại nó load username là email:
@@ -28,6 +30,7 @@ public class ShoppingUserDetailsService implements UserDetailsService {
 
         UserDetails userDetails;
 
+        // check if there is user in DB:
         if(user!=null)
         {
             // list roles of user:
@@ -53,6 +56,23 @@ public class ShoppingUserDetailsService implements UserDetailsService {
         }
         else
             throw new UsernameNotFoundException("There is no user with email: "+email);
+    }
+     */
 
+    // Cách 2 : return custom UserDetails của ta : ShoppingUserDetails:
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        // get User từ Database bằng email:
+        User user = userRepository.findByEmail(email);
+
+        ShoppingUserDetails customUserDetails;
+        // check if there is user in DB:
+        if(user!=null)
+        {
+            customUserDetails = new ShoppingUserDetails(user);
+            return customUserDetails;
+        }
+        else
+            throw new UsernameNotFoundException("There is no user with email: "+email);
     }
 }
