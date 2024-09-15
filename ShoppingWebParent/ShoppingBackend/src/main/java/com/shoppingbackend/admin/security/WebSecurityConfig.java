@@ -71,7 +71,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     //.failureHandler(new CustomAuthenticationUserHandler()) // handle custom error message when authentication fail
                     .permitAll()
                 .and()
-                .logout().permitAll(); // handle logout
+                .logout().permitAll() // handle logout
+                .and()
+                .rememberMe() // enable remember me
+                    .key("Abcdefgh123456789") // set fixed private key để cookie remember-me vẫn được lưu khi restart project
+                    .rememberMeParameter("remember-me") // chỉ định param nhận được từ bên form login là remember-me
+                    .tokenValiditySeconds(7*24*60*60); // set expiration time of Cookie : 1 weeks (by default 2 weeks)
     }
 
     @Override

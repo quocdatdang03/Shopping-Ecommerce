@@ -1,6 +1,7 @@
-package com.shoppingbackend.admin.user.service;
+package com.shoppingbackend.admin.user.export;
 
 import com.shopping.common.entity.User;
+import com.shoppingbackend.admin.user.service.AbstractUserExporter;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.xssf.usermodel.*;
 import org.hibernate.jdbc.Work;
@@ -18,7 +19,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class UserExcelExporter extends AbstractUserExporter{
+public class UserExcelExporter extends AbstractUserExporter {
     private XSSFWorkbook workBook;
     private XSSFSheet sheet;
 

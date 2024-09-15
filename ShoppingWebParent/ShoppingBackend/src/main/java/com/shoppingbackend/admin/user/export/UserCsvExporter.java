@@ -1,6 +1,7 @@
-package com.shoppingbackend.admin.user.service;
+package com.shoppingbackend.admin.user.export;
 
 import com.shopping.common.entity.User;
+import com.shoppingbackend.admin.user.service.AbstractUserExporter;
 import org.springframework.stereotype.Service;
 import org.supercsv.io.CsvBeanWriter;
 import org.supercsv.io.ICsvBeanWriter;
@@ -14,7 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class UserCsvExporter extends AbstractUserExporter{
+public class UserCsvExporter extends AbstractUserExporter {
     public void export(List<User> listUser, HttpServletResponse response) throws IOException {
         // Tạo tên file export theo format sau:
         // users_YYYY-MM-DD_HH-MM-SS.csv , E.g. users_2024-09-13_08-30-12.csv

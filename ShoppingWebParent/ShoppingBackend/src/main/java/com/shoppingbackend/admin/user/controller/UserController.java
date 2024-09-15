@@ -3,12 +3,13 @@ package com.shoppingbackend.admin.user.controller;
 import com.shopping.common.entity.Role;
 import com.shopping.common.entity.User;
 import com.shoppingbackend.admin.user.exception.UserNotFoundException;
+import com.shoppingbackend.admin.user.export.UserCsvExporter;
+import com.shoppingbackend.admin.user.export.UserExcelExporter;
+import com.shoppingbackend.admin.user.export.UserPdfExporter;
 import com.shoppingbackend.admin.user.service.*;
 import com.shoppingbackend.admin.util.FileUploadUtil;
-import org.apache.tomcat.util.http.fileupload.FileUpload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -17,10 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Controller
 @RequestMapping("/users")
