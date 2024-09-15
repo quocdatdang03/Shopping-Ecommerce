@@ -58,6 +58,11 @@ public class UserServiceImpl implements UserService{
 
     }
 
+    @Override
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
     // SAVE : CREATE OR EDIT USER
     @Override
     public User save(User user) {
@@ -85,6 +90,22 @@ public class UserServiceImpl implements UserService{
         }
 
         return userRepository.save(user);
+    }
+
+    // UPDATE ACCOUNT DETAIL of USER:
+    @Override
+    public User updateAccountDetail(User userInForm) {
+        User userInDb = userRepository.findById(userInForm.getId()).get();
+
+        // check if password of user in form is empty -> Keep current password in DB
+        if(userInForm.getPassword().isEmpty()) {
+            userInForm.setPassword(userInDb.getPassword());
+        }
+        else {
+            encodePassword(userInForm);
+        }
+
+        return userRepository.save(userInForm);
     }
 
     // DELETE USER:

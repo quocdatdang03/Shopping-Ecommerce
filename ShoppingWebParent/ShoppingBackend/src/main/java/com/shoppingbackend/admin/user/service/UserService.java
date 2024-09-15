@@ -10,7 +10,9 @@ public interface UserService {
     public List<User> findAll();
     public Page<User> listByPage(int pageOffset, String sortField, String sortDir, String keyword);
     public User getUserById(Integer id) throws UserNotFoundException;
+    public User getUserByEmail(String email);
     public User save(User user);
+    public User updateAccountDetail(User user);
     public boolean isEmailUnique(Integer id, String email);
     public void delete(int id) throws UserNotFoundException;
     public void updateUserEnabledStatus(Integer id, boolean enabledStatus);
