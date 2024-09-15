@@ -1,10 +1,29 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Fragment</title>
+<!-- Fragment : html header -->
+<head th:fragment="html_head(pageTitle, removeType)" th:remove="${removeType}">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- meta tag for responsive for mobile phone -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <title>[[${pageTitle}]]</title>
+
+    <!-- Popper -->
+    <script type="text/javascript" th:src="@{/webjars/popper.js/2.11.7/umd/popper.min.js}"></script>
+    <!-- boostrap -->
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+
+    <!-- Font awesome -->
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/font-awesome/6.5.2/css/all.min.css}">
+    <!-- JQuery -->
+    <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+
+    <!-- Common JS for every page-->
+    <script type="text/javascript" th:src="@{/js/common.js}"></script>
+
 </head>
 <body>
+
 <!-- Fragment : link title header table user -->
 <th th:fragment="link_title_user(fieldName, title)">
     <a th:href="@{'/users/page/'+${pageNumber}+'?sortField='+${fieldName}+'&sortDir='+${sortField==fieldName ? reverseSortDir : sortDir} + ${keyword!=null ? '&keyword='+ keyword : ''}}">
@@ -12,5 +31,6 @@
         <i th:if="${sortField==fieldName}" th:class="${sortDir=='asc' ? 'fa-solid fa-sort-up' : 'fa-solid fa-sort-down'}"></i>
     </a>
 </th>
+
 </body>
 </html>

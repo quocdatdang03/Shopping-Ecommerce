@@ -1,70 +1,15 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <!-- meta tag for responsive for mobile phone -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
-    <title>[[${pageTitle}]]</title>
-
-    <!-- boostrap -->
-    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
-    <!-- JQuery -->
-    <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
-    <!-- Popper.js (for tooltips, ...) -->
-    <script type="text/javascript" th:src="@{/webjars/popper.js/2.11.7/umd/popper.min.js}"></script>
-    <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+    <div th:replace="/fragment/fragments :: html_head(${pageTitle}, 'tag')">
+    </div>
 </head>
 <body>
     <!-- Header -->
-    <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
-        <div class="container-fluid">
-            <!-- Logo -->
-            <a class="navbar-brand" th:href="@{/}">
-                <img th:src="@{/images/ShopmeAdminSmall.png}" alt="logo Shopme Admin"/>
-            </a>
-            <!-- Icon Category for mobile responsive -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTop">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarTop">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/users}">Users</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/categories}">Categories</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/brands}">Brands</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/products}">Products</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/customers}">Customers</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/shipping}">Shipping</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/orders}">Orders</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/report}">Sales Report</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/articles}">Articles</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/menus}">Menus</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/settings}">Settings</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    <div th:replace="/fragment/header :: admin_header">
+    </div>
     <!-- END Header -->
 
     <div class="container mt-5">
@@ -138,9 +83,10 @@
 
     </div>
 
-    <div>
-        <p>Shopping Control Panel - Copyright &copy; Shopping</p>
+    <!-- Footer -->
+    <div th:replace="/fragment/footer :: admin_footer">
     </div>
+    <!-- End Footer -->
 
 
     <!-- MODAL -->

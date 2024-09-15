@@ -1,18 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <!-- meta tag for responsive for mobile phone -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
-    <title>Login Page</title>
-    <!-- boostrap -->
-    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
-
-    <!-- Font awesome -->
-    <link rel="stylesheet" type="text/css" th:href="@{/webjars/font-awesome/6.5.2/css/all.min.css}">
-    <!-- JQuery -->
-    <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
-    <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+    <div th:replace="/fragment/fragments :: html_head('Login Page', 'tag')">
+    </div>
 
     <style>
         .btn-login {
