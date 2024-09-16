@@ -22,7 +22,9 @@
     <form th:action="@{/account/update}"
           enctype="multipart/form-data"
           th:object="${user}" method="POST"
-          class="mx-auto border p-3 rounded" style="max-width: 700px;"
+          class="mx-auto border p-3 rounded"
+          style="max-width: 700px;"
+          id="formAccountDetail"
     >
         <!-- Hidden Field to store ID-->
         <input type="hidden" id="id" th:field="*{id}" />
@@ -79,7 +81,7 @@
                 <button class="btn btn-primary p-2" style="width: 100%;">Update</button>
             </div>
             <div class="col-6">
-                <a th:href="@{/users}" class="btn btn-secondary p-2" style="width: 100%;">Cancel</a>
+                <a th:href="@{/}" class="btn btn-secondary p-2" style="width: 100%;">Cancel</a>
             </div>
         </div>
     </form>
@@ -117,10 +119,11 @@
 
 
         // Validation Form:
-        $("form").on("submit", function (e) {
+        $("#formAccountDetail").on("submit", function (e) {
             // Clear previous validation errors
             $(".is-invalid").removeClass("is-invalid");
             $(".invalid-feedback").remove();
+
             const firstNameValue = $("#firstName").val().trim();
             const lastNameValue = $("#lastName").val().trim();
             const passwordValue = $("#password").val().trim();

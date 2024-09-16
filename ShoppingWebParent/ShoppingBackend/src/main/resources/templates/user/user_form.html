@@ -7,180 +7,180 @@
     </div>
 </head>
 <body>
-    <!-- Header -->
-    <div th:replace="/fragment/header :: admin_header">
-    </div>
-    <!-- END Header -->
+<!-- Header -->
+<div th:replace="/fragment/header :: admin_header">
+</div>
+<!-- END Header -->
 
-    <div class="container mt-5">
-        <h1 class="mb-5">Manager User | [[${pageTitle}]]</h1>
-        <form th:action="@{/users/save}"
-              enctype="multipart/form-data"
-              th:object="${user}" method="POST"
-              class="mx-auto border p-3 rounded" onsubmit="return checkEmailUnique(this)" style="max-width: 700px;"
-        >
-            <!-- Field ID-->
-            <input type="hidden" id="id" th:field="*{id}" />
-            <div class="row row-cols-1 row-cols-sm-2">
-                <div class="col mb-3">
-                    <label for="firstName" class="form-label">First Name</label>
-                    <input th:field="*{firstName}" type="text" class="form-control" id="firstName" required>
-                </div>
-                <div class="col mb-3">
-                    <label for="lastName" class="form-label">Last Name</label>
-                    <input th:field="*{lastName}" type="text" class="form-control" id="lastName" required>
-                </div>
+<div class="container mt-5">
+    <h1 class="mb-5">Manager User | [[${pageTitle}]]</h1>
+    <form th:action="@{/users/save}"
+          enctype="multipart/form-data"
+          th:object="${user}" method="POST"
+          class="mx-auto border p-3 rounded" onsubmit="return checkEmailUnique(this)" style="max-width: 700px;"
+    >
+        <!-- Field ID-->
+        <input type="hidden" id="id" th:field="*{id}" />
+        <div class="row row-cols-1 row-cols-sm-2">
+            <div class="col mb-3">
+                <label for="firstName" class="form-label">First Name</label>
+                <input th:field="*{firstName}" type="text" class="form-control" id="firstName" required>
             </div>
             <div class="col mb-3">
-                <label for="email" class="form-label">Email</label>
-                <!--<input th:field="*{email}" type="email" id="email" class="form-control" th:classappend="${#fields.hasErrors('email') ? 'is-invalid' : ''}" required>-->
-                <input th:field="*{email}" type="email" id="email" class="form-control" required>
-               <!-- <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger"></p>-->
+                <label for="lastName" class="form-label">Last Name</label>
+                <input th:field="*{lastName}" type="text" class="form-control" id="lastName" required>
             </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
-                <!-- Trong -->
-                <input th:if="${user.id==null}" th:field="*{password}" type="password" class="form-control" id="password" required minlength="5" maxlength="20">
-                <input th:if="${user.id!=null}" th:field="*{password}" type="password" class="form-control" id="password" minlength="5" maxlength="20" placeholder="Leave blank to keep current password">
+        </div>
+        <div class="col mb-3">
+            <label for="email" class="form-label">Email</label>
+            <!--<input th:field="*{email}" type="email" id="email" class="form-control" th:classappend="${#fields.hasErrors('email') ? 'is-invalid' : ''}" required>-->
+            <input th:field="*{email}" type="email" id="email" class="form-control" required>
+            <!-- <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger"></p>-->
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <!-- Trong -->
+            <input th:if="${user.id==null}" th:field="*{password}" type="password" class="form-control" id="password" required minlength="5" maxlength="20">
+            <input th:if="${user.id!=null}" th:field="*{password}" type="password" class="form-control" id="password" minlength="5" maxlength="20" placeholder="Leave blank to keep current password">
+        </div>
+        <div class="mb-3">
+            <label for="roles" class="form-label">Roles</label>
+            <select th:field="*{roles}" class="form-select" multiple size="4" id="roles">
+                <option th:each="item : ${roleList}"
+                        th:value="${item.id}"
+                        th:text="${item.name}"
+                >
+                </option>
+            </select>
+        </div>
+        <div class="form-check mb-3">
+            <label class="form-check-label" for="enabled">
+                Enabled
+            </label>
+            <input th:field="*{enabled}" class="form-check-input" type="checkbox" value="" id="enabled">
+        </div>
+        <div class="mb-3">
+            <!-- Hidden field to store photos -->
+            <input type="hidden" th:field="*{photos}" />
+            <label class="form-label" for="photoFile">
+                Photo
+            </label>
+            <input class="form-control" name="inputFileImage" accept="image/png, image/jpeg" type="file" value="" id="photoFile">
+            <!--image photo-->
+            <div class="d-flex justify-content-end mt-3">
+                <img id="imgPhoto" class="img-thumbnail w-25 h-auto" th:src="@{${user.photoImagePath}}" th:alt="${user.photos!=null ? user.photos : 'default user image'}"/>
             </div>
-            <div class="mb-3">
-                <label for="roles" class="form-label">Roles</label>
-                <select th:field="*{roles}" class="form-select" multiple size="4" id="roles">
-                    <option th:each="item : ${roleList}"
-                            th:value="${item.id}"
-                            th:text="${item.name}"
-                    >
-                    </option>
-                </select>
+        </div>
+        <div class="row mt-3">
+            <div class="col-6">
+                <button class="btn btn-primary p-2" style="width: 100%;">Save</button>
             </div>
-            <div class="form-check mb-3">
-                <label class="form-check-label" for="enabled">
-                   Enabled
-                </label>
-                <input th:field="*{enabled}" class="form-check-input" type="checkbox" value="" id="enabled">
+            <div class="col-6">
+                <a th:href="@{/users}" class="btn btn-secondary p-2" style="width: 100%;">Cancel</a>
             </div>
-            <div class="mb-3">
-                <!-- Hidden field to store photos -->
-                <input type="hidden" th:field="*{photos}" />
-                <label class="form-label" for="photoFile">
-                    Photo
-                </label>
-                <input class="form-control" name="inputFileImage" accept="image/png, image/jpeg" type="file" value="" id="photoFile">
-                <!--image photo-->
-                <div class="d-flex justify-content-end mt-3">
-                    <img id="imgPhoto" class="img-thumbnail w-25 h-auto" th:src="@{${user.photoImagePath}}" th:alt="${user.photos!=null ? user.photos : 'default user image'}"/>
-                </div>
-            </div>
-            <div class="row mt-3">
-                <div class="col-6">
-                    <button class="btn btn-primary p-2" style="width: 100%;">Save</button>
-                </div>
-                <div class="col-6">
-                    <a th:href="@{/users}" class="btn btn-secondary p-2" style="width: 100%;">Cancel</a>
-                </div>
-            </div>
-        </form>
+        </div>
+    </form>
 
-    </div>
+</div>
 
-    <!-- Footer -->
-    <div th:replace="/fragment/footer :: admin_footer">
-    </div>
-    <!-- End Footer -->
+<!-- Footer -->
+<div th:replace="/fragment/footer :: admin_footer">
+</div>
+<!-- End Footer -->
 
 
-    <!-- MODAL -->
-    <div class="modal fade" id="warningEmailModal">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 id="warningEmailModelTitle" class="modal-title fs-5"></h1>
-                    <button class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <p id="warningEmailModelMessage"></p>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-                </div>
+<!-- MODAL -->
+<div class="modal fade" id="warningEmailModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 id="warningEmailModelTitle" class="modal-title fs-5"></h1>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p id="warningEmailModelMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
-    <script type="text/javascript">
-        // using Jquery:
-        /* Check Email Unique */
-        function checkEmailUnique(form)
-        {
-            var url = "[[@{/users/check_email}]]"; // using thymeleaf để tạo URL:
-            // tạo object params chứa các param cần gửi đến server :
-            var params = {
-                id: $('#id').val(), // id : cho việc check Email unique giữa case : Create và Edit user
-                email: $('#email').val(),
-                // Vì đang sử dụng Spring Security nên khi gửi request POST từ Form đến Server bắt buộc phải có param _csrf
-                // nếu không sẽ xảy ra error 403 Forbidden
-                _csrf: $('input[name="_csrf"]').val()
-            }
-            // Sử dụng ajax để gửi request (Post) đến Server mà không cần reload web
-            // method post của Jquery sẽ convert object params trên thành chuỗi query string như này : emai=...&_csrf=...
-            $.post(url, params, function (response) {
-                // response được return về từ Server (bên UserRestController):
-                if(response==='duplicate')
-                {
-                    // Nếu email đã tồn tại trong DB thì show MODAL:
-                    $('#warningEmailModal').modal('show') // .modal('show') : là method của bootstrap để hiển thị Modal
-                    $('#warningEmailModelTitle').text("Warning")
-                    $('#warningEmailModelMessage').text("Email "+$('#email').val()+" exists, Please try another email!")
-                }
-                else if(response==='ok')
-                {
-                    // Nếu email chưa tồn tại trong DB thì cho form submit :
-                    form.submit()
-                }
-            })
-            //     .fail(function (error) {
-            //     // Nếu request fail thì code trong này sẽ được thực hiện
-            //     $('#warningEmailModal').modal('show') // .modal('show') : là method của bootstrap để hiển thị Modal
-            //     $('#warningEmailModelTitle').text("Error")
-            //     $('#warningEmailModelMessage').text("Bad Request, could not connect to Server!")
-            // })
-            return false;
+</div>
+<script type="text/javascript">
+    // using Jquery:
+    /* Check Email Unique */
+    function checkEmailUnique(form)
+    {
+        var url = "[[@{/users/check_email}]]"; // using thymeleaf để tạo URL:
+        // tạo object params chứa các param cần gửi đến server :
+        var params = {
+            id: $('#id').val(), // id : cho việc check Email unique giữa case : Create và Edit user
+            email: $('#email').val(),
+            // Vì đang sử dụng Spring Security nên khi gửi request POST từ Form đến Server bắt buộc phải có param _csrf
+            // nếu không sẽ xảy ra error 403 Forbidden
+            _csrf: $('input[name="_csrf"]').val()
         }
-
-
-        $(document).ready(function () {
-
-            // Handle Change Image when upload input type file:
-            $('#photoFile').change(function() {
-                // Lấy ra file size
-                var fileSize = this.files[0].size
-                alert(fileSize)
-                // check if fileSize > 1MB (1048567) -> not accept:
-                if(fileSize>5048567)
-                {
-                    this.setCustomValidity("file size must less than 1MB!")
-                    this.reportValidity()
-                }
-                else {
-                    this.setCustomValidity("")
-                    showImageThumbnail(this)
-                }
-            })
-
+        // Sử dụng ajax để gửi request (Post) đến Server mà không cần reload web
+        // method post của Jquery sẽ convert object params trên thành chuỗi query string như này : emai=...&_csrf=...
+        $.post(url, params, function (response) {
+            // response được return về từ Server (bên UserRestController):
+            if(response==='duplicate')
+            {
+                // Nếu email đã tồn tại trong DB thì show MODAL:
+                $('#warningEmailModal').modal('show') // .modal('show') : là method của bootstrap để hiển thị Modal
+                $('#warningEmailModelTitle').text("Warning")
+                $('#warningEmailModelMessage').text("Email "+$('#email').val()+" exists, Please try another email!")
+            }
+            else if(response==='ok')
+            {
+                // Nếu email chưa tồn tại trong DB thì cho form submit :
+                form.submit()
+            }
         })
+        //     .fail(function (error) {
+        //     // Nếu request fail thì code trong này sẽ được thực hiện
+        //     $('#warningEmailModal').modal('show') // .modal('show') : là method của bootstrap để hiển thị Modal
+        //     $('#warningEmailModelTitle').text("Error")
+        //     $('#warningEmailModelMessage').text("Bad Request, could not connect to Server!")
+        // })
+        return false;
+    }
+
+
+    $(document).ready(function () {
 
         // Handle Change Image when upload input type file:
-        function showImageThumbnail(fileInput) {
-            // Lấy ra đối tượng FileList :
-            var file = fileInput.files[0];
-
-            var fileReader = new FileReader();
-
-            fileReader.onload = function (e) {
-                $('#imgPhoto').attr("src", e.target.result)
+        $('#photoFile').change(function() {
+            // Lấy ra file size
+            var fileSize = this.files[0].size
+            alert(fileSize)
+            // check if fileSize > 1MB (1048567) -> not accept:
+            if(fileSize>5048567)
+            {
+                this.setCustomValidity("file size must less than 1MB!")
+                this.reportValidity()
             }
-            fileReader.readAsDataURL(file)
-        }
+            else {
+                this.setCustomValidity("")
+                showImageThumbnail(this)
+            }
+        })
 
-    </script>
+    })
+
+    // Handle Change Image when upload input type file:
+    function showImageThumbnail(fileInput) {
+        // Lấy ra đối tượng FileList :
+        var file = fileInput.files[0];
+
+        var fileReader = new FileReader();
+
+        fileReader.onload = function (e) {
+            $('#imgPhoto').attr("src", e.target.result)
+        }
+        fileReader.readAsDataURL(file)
+    }
+
+</script>
 </body>
 </html>

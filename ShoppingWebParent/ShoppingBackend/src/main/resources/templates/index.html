@@ -1,11 +1,23 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en">
 <head>
     <div th:replace="/fragment/fragments :: html_head('Home - Shopping Admin', 'tag')">
     </div>
 </head>
 <body>
     <div th:replace="/fragment/header :: admin_header">
+    </div>
+
+    <div class="container min-vh-100 mt-5">
+        <h1>Admin Dashboard</h1>
+        <p>
+            Welcome <a class="" sec:authentication="principal.fullName" th:href="@{/account}"></a>
+        </p>
+        <p>
+            Your roles: <b sec:authentication="principal.authorities"></b>
+        </p>
     </div>
 
     <!-- Footer -->
