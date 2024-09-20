@@ -145,7 +145,9 @@
                 <!-- End btn previous -->
 
                 <!-- page number link -->
-                <li th:each="index : ${#numbers.sequence(1, totalPages)}" class="page-item" th:classappend="${pageNumber==index} ? 'active' : ''">
+                <!-- Chỉ hiển thị 5 items : -->
+                <li th:each="index : ${#numbers.sequence(pageNumber<=3 ? 1 : (pageNumber >= totalPages - 2 ? totalPages - 4 : pageNumber - 2) , totalPages >= 5 ? (pageNumber<=3 ? 5 : (pageNumber >= totalPages - 2 ? totalPages : pageNumber+2)) : totalPages)}"
+                    class="page-item" th:classappend="${pageNumber==index} ? 'active' : ''">
                     <a class="page-link" th:href="@{'/users/page/'+${index}+'?sortField='+${sortField}+'&sortDir='+${sortDir}+ ${keyword!=null ? '&keyword='+ keyword : ''}}">[[${index}]]</a>
                 </li>
                 <!-- End page number link -->

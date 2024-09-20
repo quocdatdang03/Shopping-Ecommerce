@@ -1,25 +1,18 @@
 package com.shoppingbackend.admin.user.export;
 
 import com.shopping.common.entity.User;
-import com.shoppingbackend.admin.user.service.AbstractUserExporter;
+import com.shoppingbackend.admin.common.AbstractExporter;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.xssf.usermodel.*;
-import org.hibernate.jdbc.Work;
 import org.springframework.stereotype.Service;
-import org.supercsv.io.CsvBeanWriter;
-import org.supercsv.io.ICsvBeanWriter;
-import org.supercsv.prefs.CsvPreference;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 @Service
-public class UserExcelExporter extends AbstractUserExporter {
+public class UserExcelExporter extends AbstractExporter {
     private XSSFWorkbook workBook;
     private XSSFSheet sheet;
 
@@ -108,7 +101,7 @@ public class UserExcelExporter extends AbstractUserExporter {
     public void export(List<User> listUser, HttpServletResponse response) throws IOException {
         // Tạo tên file export theo format sau:
         // users_YYYY-MM-DD_HH-MM-SS.csv , E.g. users_2024-09-13_08-30-12.csv
-        super.setContentTypeAndExtensionFile("application/octet-stream", ".xlsx", response);
+        super.setContentTypeAndExtensionFile("users","application/octet-stream", ".xlsx", response);
 
         // we'll export all fields of user exclude : password, photos
         createHeaderLine();
