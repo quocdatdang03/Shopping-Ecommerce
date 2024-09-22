@@ -10,6 +10,7 @@ import com.shoppingbackend.admin.user.service.*;
 import com.shoppingbackend.admin.util.FileUploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -20,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/users")
@@ -62,11 +64,16 @@ public class UserController {
     @GetMapping("/page/{pageNumber}")
     public String listByPage(
             @PathVariable("pageNumber") int pageNumber,
-            @RequestParam(value = "sortField") String sortField,
-            @RequestParam(value = "sortDir") String sortDir,
+            @Param(value = "sortField") String sortField,
+            @Param(value = "sortDir") String sortDir,
             @RequestParam(value = "keyword", required = false) String keyword,
             Model model)
     {
+        if(sortField==null || sortField.isEmpty())
+            sortField = "id";
+        if(sortDir==null || sortDir.isEmpty())
+            sortDir = "asc";
+
         // Handle paginate and sorting and search by keyword  :
         Page<User> page = userService.listByPage(pageNumber, sortField,sortDir,keyword);
 
@@ -118,6 +125,8 @@ public class UserController {
         try
         {
             user = userService.getUserById(id);
+            Set<Role> roles = user.getRoles();
+            model.addAttribute("roleListOfUser", roles);
         }
         catch (UserNotFoundException ex)
         {
