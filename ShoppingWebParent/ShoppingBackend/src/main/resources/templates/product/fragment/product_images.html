@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="content_images" th:remove="tag">
+    <div class="row row-cols-2 row-cols-sm-3 g-3" id="divProductImage">
+        <div class="col text-center">
+            <label class="form-label badge text-bg-primary fs-5" for="inputImageFile">Main Image</label>
+            <div class="image-container mt-1 mb-2">
+                <img id="imgThumbnail" class="img-fluid" th:src="@{${product.mainImagePath}}" alt="" />
+            </div>
+            <input id="inputImageFile" name="inputImageFile" type="file" class="form-control" accept="image/png, image/jpeg"/>
+        </div>
+        <div class="col text-center" id="divExtraImage0">
+            <div id="extraImageHeader0" class="d-flex justify-content-center align-items-center">
+                <label class="form-label badge text-bg-secondary fs-5">Extra Image #1</label>
+            </div>
+            <div class="image-container mt-1 mb-2">
+                <img id="extraImgThumbnail0" onclick="handleShowInputFileDialog(0)" class="img-fluid" th:src="@{${product.mainImagePath}}" alt="" style="cursor: pointer;"/>
+            </div>
+            <input name="inputExtraImageFile" id="inputExtraImageFile0" type="file" class="form-control" accept="image/png, image/jpeg"/>
+        </div>
+    </div>
+</div>
+</body>
+</html>

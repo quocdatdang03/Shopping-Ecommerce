@@ -182,6 +182,11 @@ public class UserController {
     public String deleteUser(@PathVariable("id") int id, RedirectAttributes redirectAttributes) throws UserNotFoundException {
         try {
             userService.delete(id);
+
+            // after delete user, remove image dir of that user:
+            String imgUserDirPath = "user-images/"+id;
+            FileUploadUtil.removeDirectory(imgUserDirPath);
+
             redirectAttributes.addFlashAttribute("message", "The User(id: "+id+") has been deleted successfully");
             return "redirect:/users";
         } catch (UserNotFoundException ex) {
@@ -198,7 +203,7 @@ public class UserController {
         userService.updateUserEnabledStatus(id,enabledStatus);
         String message;
         if(enabledStatus==true)
-            message = "Activate User (id:"+id+") successfully!";
+            message = "Activate User (id:"+id+") successfully  !";
         else
             message = "Deactivate User (id:"+id+") successfully!";
         redirectAttributes.addFlashAttribute("message", message);

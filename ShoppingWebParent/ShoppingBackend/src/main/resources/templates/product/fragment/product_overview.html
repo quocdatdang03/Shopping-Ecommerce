@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div th:fragment="content_overview" th:remove="tag">
+            <!-- Hidden Field ID-->
+            <input type="hidden" id="id" th:field="*{id}" />
+
+            <div class="mb-3 row row-cols-1 row-cols-sm-2 gy-3 gy-sm-0">
+                <div class="col">
+                    <label for="productName" class="form-label">Product Name</label>
+                    <input th:field="*{name}" type="text" class="form-control" id="productName" required>
+                </div>
+
+                <div class="col">
+                    <label for="productAlias" class="form-label">Alias</label>
+                    <input th:field="*{alias}" type="text" class="form-control" id="productAlias"
+                           placeholder="Default is Product Name (White spaces are replaced by dashes)"
+                           readonly
+                           required>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="brandList" class="form-label">Brand</label>
+                <select th:field="*{brand}" class="form-select" id="brandList">
+                    <option th:each="item : ${brandList}"
+                            th:value="${item.id}"
+                            th:text="${item.name}"
+                    >
+                    </option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="categoryList" class="form-label">Category</label>
+                <select th:field="*{category}" class="form-select" id="categoryList">
+                </select>
+            </div>
+
+            <div class="form-check mb-3">
+                <label class="form-check-label" for="enabled">
+                    Enabled
+                </label>
+                <input th:field="*{enabled}" class="form-check-input" type="checkbox" value="" id="enabled">
+            </div>
+
+            <div class="form-check mb-3">
+                <label class="form-check-label" for="inStock">
+                    In-Stock
+                </label>
+                <input th:field="*{inStock}" class="form-check-input" type="checkbox" value="" id="inStock">
+            </div>
+
+            <div class="mb-3">
+                <label for="cost" class="form-label">Cost</label>
+                <input th:field="*{cost}" type="number" class="form-control" id="cost" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="price" class="form-label">Price</label>
+                <input th:field="*{price}" type="number" class="form-control" id="price" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="discountPercent" class="form-label">Discount Percent</label>
+                <input th:field="*{discountPercent}" type="number" class="form-control" id="discountPercent" required>
+            </div>
+    </div>
+</body>
+</html>

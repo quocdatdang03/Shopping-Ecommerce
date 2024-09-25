@@ -151,6 +151,10 @@ public class BrandController {
         // delete :
         try {
             brandService.deleteBrandById(id);
+            // after delete brand, remove image dir of that brand:
+            String imageBrandDirPath = "../brand-images/"+id;
+            FileUploadUtil.removeDirectory(imageBrandDirPath);
+
             redirectAttributes.addFlashAttribute("message", "The Brand(id: "+id+") has been deleted successfully");
             return "redirect:/brands";
         } catch (BrandNotFoundException e) {

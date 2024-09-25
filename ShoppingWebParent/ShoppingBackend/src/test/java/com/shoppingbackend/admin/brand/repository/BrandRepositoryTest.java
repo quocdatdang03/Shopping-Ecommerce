@@ -13,7 +13,7 @@ import org.springframework.test.annotation.Rollback;
 import java.util.HashSet;
 import java.util.Set;
 
-@DataJpaTest
+@DataJpaTest(showSql = false)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Rollback(value = false)
 public class BrandRepositoryTest {

@@ -3,6 +3,7 @@ package com.shopping.common.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -13,6 +14,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @Entity
+@ToString(of = {"id", "name"})
 @Table(name = "categories")
 public class Category {
     @Id

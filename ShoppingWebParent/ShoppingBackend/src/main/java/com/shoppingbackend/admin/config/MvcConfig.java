@@ -38,6 +38,14 @@ public class MvcConfig implements WebMvcConfigurer {
 
         // Những request bắt đầu bằng /brand-images/** -> thì đều có thể truy cập vào folder brand-images
         registerImageResources(brandImageDirName, brandImageDir, registry);
+
+        // -------- Config Image Resource for Product:
+        String productImageDirName = "product-images";
+        // get path category-images dir :
+        Path productImageDir = Paths.get("../"+productImageDirName); // Vì ta lưu folder brand-images ở ngoài ShoppingBackend nên phải ../
+
+        // Những request bắt đầu bằng /brand-images/** -> thì đều có thể truy cập vào folder brand-images
+        registerImageResources(productImageDirName, productImageDir, registry);
     }
 
     private void registerImageResources(String imageDirName, Path imageDir, ResourceHandlerRegistry registry) {
