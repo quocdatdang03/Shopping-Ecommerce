@@ -11,6 +11,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name="product_details")
 public class ProductDetail {
@@ -33,4 +34,5 @@ public class ProductDetail {
         this.value = value;
         this.product = product;
     }
+
 }

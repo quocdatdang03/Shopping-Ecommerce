@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -18,6 +19,18 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Product> listAllProducts() {
         return (List<Product>) productRepository.findAll();
+    }
+
+    @Override
+    public Product getProductById(Integer id) throws ProductNotFoundException {
+        try {
+            Product product = productRepository.findById(id).get();
+            return product;
+        }
+        catch(NoSuchElementException e)
+        {
+            throw new ProductNotFoundException("Could not find any product with id : "+id);
+        }
     }
 
     @Override

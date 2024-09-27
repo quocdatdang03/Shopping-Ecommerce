@@ -10,18 +10,41 @@
         <div class="col text-center">
             <label class="form-label badge text-bg-primary fs-5" for="inputImageFile">Main Image</label>
             <div class="image-container mt-1 mb-2">
+                <!-- Hidden Field to store Main Image -->
+                <input type="hidden" th:field="*{mainImage}"/>
                 <img id="imgThumbnail" class="img-fluid" th:src="@{${product.mainImagePath}}" alt="" />
             </div>
             <input id="inputImageFile" name="inputImageFile" type="file" class="form-control" accept="image/png, image/jpeg"/>
         </div>
-        <div class="col text-center" id="divExtraImage0">
-            <div id="extraImageHeader0" class="d-flex justify-content-center align-items-center">
-                <label class="form-label badge text-bg-secondary fs-5">Extra Image #1</label>
+        <!-- In case Edit mode -->
+        <th:block th:if="${product.id != null}" th:each="item, itemStatus : ${product.extraImages}">
+            <div class="col text-center" th:id="${'divExtraImage'+itemStatus.index}">
+                <div th:id="${'extraImageHeader'+itemStatus.index}" class="d-flex justify-content-center align-items-center">
+                    <label class="form-label badge text-bg-secondary fs-5">Extra Image #[[${itemStatus.index + 1}]]</label>
+                    <p class="mb-0 mx-1">[[${item.name}]]</p>
+                    <div class="btn fa-solid fa-trash fa-2x text-danger"
+                         th:onclick="'removeExtraImage('+${itemStatus.index}+')'"
+                         title="Remove this image">
+                    </div>
+                </div>
+                <div class="image-container mt-1 mb-2">
+                    <img th:id="${'extraImgThumbnail'+itemStatus.index}" class="img-fluid" th:src="@{${item.productExtraImagePath}}" alt="" style="cursor: pointer;"/>
+                </div>
+                <input name="inputExtraImageFile" th:id="${'inputExtraImageFile'+itemStatus.index}" type="file" class="form-control" accept="image/png, image/jpeg"/>
+
+                <!-- Hidden Fields to store imageId and imageName -->
+                <input type="hidden" name="imageIds" th:id="${'imageId'+itemStatus.index}" th:value="${item.id}"/>
+                <input type="hidden" name="imageNames" th:id="${'imageName'+itemStatus.index}" th:value="${item.name}"/>
+            </div>
+        </th:block>
+        <div class="col text-center" th:id="${'divExtraImage'+numberOfExistingExtraImages}">
+            <div th:id="${'extraImageHeader'+numberOfExistingExtraImages}" class="d-flex justify-content-center align-items-center">
+                <label class="form-label badge text-bg-secondary fs-5">Extra Image #[[${numberOfExistingExtraImages + 1}]]</label>
             </div>
             <div class="image-container mt-1 mb-2">
-                <img id="extraImgThumbnail0" onclick="handleShowInputFileDialog(0)" class="img-fluid" th:src="@{${product.mainImagePath}}" alt="" style="cursor: pointer;"/>
+                <img th:id="${'extraImgThumbnail'+numberOfExistingExtraImages}" th:onclick="'handleShowInputFileDialog(' + ${numberOfExistingExtraImages} + ')'" class="img-fluid" th:src="@{/images/img-thumbnail-default.jpg}" alt="" style="cursor: pointer;"/>
             </div>
-            <input name="inputExtraImageFile" id="inputExtraImageFile0" type="file" class="form-control" accept="image/png, image/jpeg"/>
+            <input name="inputExtraImageFile" th:id="${'inputExtraImageFile'+numberOfExistingExtraImages}" type="file" class="form-control" accept="image/png, image/jpeg"/>
         </div>
     </div>
 </div>

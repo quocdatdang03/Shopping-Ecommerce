@@ -1,8 +1,6 @@
 package com.shoppingbackend.admin.product.controller;
 
-import com.shopping.common.entity.Brand;
-import com.shopping.common.entity.Category;
-import com.shopping.common.entity.Product;
+import com.shopping.common.entity.*;
 import com.shoppingbackend.admin.brand.service.BrandService;
 import com.shoppingbackend.admin.brand.service.BrandServiceImpl;
 import com.shoppingbackend.admin.category.exception.CategoryNotFoundException;
@@ -10,6 +8,8 @@ import com.shoppingbackend.admin.category.service.CategoryServiceImpl;
 import com.shoppingbackend.admin.product.exception.ProductNotFoundException;
 import com.shoppingbackend.admin.product.service.ProductServiceImpl;
 import com.shoppingbackend.admin.util.FileUploadUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
@@ -20,11 +20,19 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/products")
 public class ProductController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProductController.class);
+
     @Autowired
     private ProductServiceImpl productService;
 
@@ -61,6 +69,11 @@ public class ProductController {
         product.setInStock(true);
 
         model.addAttribute("pageTitle", "Create New Product");
+
+        // Create mode -> extra image is 0
+        model.addAttribute("numberOfExistingExtraImages", 0);
+        model.addAttribute("numberOfExistingDetails", 0);
+
         return "product/product_form";
     }
 
@@ -70,11 +83,30 @@ public class ProductController {
             @ModelAttribute("product") Product product,
             @RequestParam("inputImageFile") MultipartFile mainImageMultipartFile,
             @RequestParam("inputExtraImageFile") MultipartFile[] extraImagesMultipartFiles,
+            @RequestParam("detailName") String[] detailNames,
+            @RequestParam("detailValue") String[] detailValues,
+            @RequestParam(value = "imageIds", required = false) String[] extraImageIds,
+            @RequestParam(value = "imageNames", required = false) String[] extraImageNames,
+            @RequestParam(value = "detailIds", required = false) String[] detailIds,
             RedirectAttributes redirectAttributes) throws IOException {
 
-        // set field name for Entity Product and ProductImage:
+        // ---------- 1. handle product images:
+        // set main image Product
         setMainImageName(mainImageMultipartFile, product);
-        setExtraImageNames(extraImagesMultipartFiles, product);
+
+        // Then, set existing extra images for Product :
+        setExistingExtraImages(extraImageIds, extraImageNames, product);
+
+        // Then, set new extra images :
+        setNewExtraImageNames(extraImagesMultipartFiles, product);
+
+        // Delete các extra images trong Local Dir mà không còn tồn tại trong Form (hay DB) nữa:
+        deleteExtraImagesWereRemovedOnForm(product);
+
+
+        // ---------- 2. handle product details:
+        // set product detail (name, value) for Product:
+        setProductDetails(detailIds,detailNames, detailValues, product);
 
         // save product to DB:
         Product savedProduct = productService.saveProduct(product);
@@ -88,6 +120,8 @@ public class ProductController {
     }
 
 
+    // ------------------ Method for create and edit product images and product details
+    // ------- for product images :
     private void setMainImageName(MultipartFile multipartFile, Product product) {
         // in case file input has uploaded file:
         if(!multipartFile.isEmpty()) {
@@ -98,7 +132,27 @@ public class ProductController {
         }
     }
 
-    private void setExtraImageNames(MultipartFile[] multipartFiles, Product product) {
+    private void setExistingExtraImages(String[] extraImageIds, String[] extraImageNames, Product product) {
+        // Nếu mà extraImagesIds hay extraImageNames không có giá trị thì thoát hàm không làm gì cả
+        if(extraImageIds==null || extraImageIds.length==0)
+            return;
+
+        Set<ProductImage> productImageSet = new HashSet<ProductImage>();
+
+        // get existing extra images from Form
+        for(int i=0; i<extraImageIds.length; i++) {
+            Integer extraImageId = Integer.parseInt(extraImageIds[i]);
+            String extraImageName = extraImageNames[i];
+
+            productImageSet.add(new ProductImage(extraImageId, extraImageName, product));
+        }
+
+        // set existing extra images
+        product.setExtraImages(productImageSet);
+    }
+
+    private void setNewExtraImageNames(MultipartFile[] multipartFiles, Product product) {
+        // Nếu mà có thêm file new extraImage thì set, không thì không làm gì cả
         if(multipartFiles.length > 0)
         {
             for(MultipartFile multipartFile : multipartFiles) {
@@ -107,8 +161,33 @@ public class ProductController {
                     continue;
                 // get uploaded file from file input:
                 String nameUploadedFile = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-                product.addExtraImages(nameUploadedFile);
+
+                // check if this image name doesn't exist in DB -> add new extra image:
+                if(!product.containsExtraImage(nameUploadedFile))
+                    product.addExtraImages(nameUploadedFile);
             }
+        }
+    }
+
+    private void deleteExtraImagesWereRemovedOnForm(Product product) {
+        String extraImageDir = "../product-images/"+product.getId()+"/extraImages";
+        Path extraImageDirPath = Paths.get(extraImageDir);
+        try {
+            // Lặp qua các file trong extraImageDir -> check nếu extra images của Product không chứa file nào trong extraImageDir thì xóa file đó khỏi đó
+            Files.list(extraImageDirPath).forEach(fileItem -> {
+                String fileName = fileItem.getFileName().toString();
+                if(!product.containsExtraImage(fileName)) {
+                    try {
+                        Files.delete(fileItem);
+                    } catch (IOException e) {
+                        LOGGER.error("Could not delete extra image file: "+fileName);
+                    }
+                }
+            });
+        }
+        catch(IOException e)
+        {
+            LOGGER.error("Could not list extra image directory: "+extraImageDir);
         }
     }
 
@@ -149,6 +228,43 @@ public class ProductController {
         }
     }
 
+    // ------- for product details :
+
+
+    private void setProductDetails(String[] detailIds, String[] detailNames, String[] detailValues, Product product) {
+        // Nếu detail không có giá trị thì không làm gì cả :
+        if(detailNames==null || detailNames.length==0)
+            return;
+
+        if(detailValues==null || detailValues.length==0)
+            return;
+
+        for(int i=0; i < detailNames.length; i++)
+        {
+            String name = detailNames[i];
+            String value = detailValues[i];
+            Integer id = Integer.valueOf(detailIds[i]);
+
+            if(id!=0)
+            {
+                // In case change existing detail one:
+                product.addProductDetail(id, name, value);
+
+            }
+            else if(!name.isEmpty() && !value.isEmpty())
+            {
+                // In case add new detail one
+                // if name and value is not empty -> add product detail
+                product.addProductDetail(name, value);
+            }
+        }
+
+    }
+
+
+
+    // ------------------ END Method for create and edit product images and product details
+
 
     // UPDATE ENABLED Status :
     @GetMapping("/{id}/enabled/{enabledStatus}")
@@ -184,6 +300,25 @@ public class ProductController {
             redirectAttributes.addFlashAttribute("message", "The Product(id: "+id+") has been deleted successfully");
             return "redirect:/products";
 
+        } catch (ProductNotFoundException e) {
+            throw new ProductNotFoundException(e.getMessage());
+        }
+    }
+
+    // SHOW EDIT :
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable("id") Integer id, Model model) throws ProductNotFoundException {
+        try {
+            Product product = productService.getProductById(id);
+            model.addAttribute("product", product);
+            model.addAttribute("pageTitle", "Edit Product (ID:"+id+")");
+
+            // Edit mode -> extra images are
+            model.addAttribute("numberOfExistingExtraImages", product.getExtraImages().size());
+            model.addAttribute("numberOfExistingDetails", product.getDetails().size());
+
+
+            return "/product/product_form";
         } catch (ProductNotFoundException e) {
             throw new ProductNotFoundException(e.getMessage());
         }

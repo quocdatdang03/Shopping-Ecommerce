@@ -9,6 +9,9 @@
             <!-- Hidden Field ID-->
             <input type="hidden" id="id" th:field="*{id}" />
 
+            <!-- Hidden Field Category ID-->
+            <input th:if="${product.category != null}" type="hidden" id="categoryId" th:value="${product.category.id}" />
+
             <div class="mb-3 row row-cols-1 row-cols-sm-2 gy-3 gy-sm-0">
                 <div class="col">
                     <label for="productName" class="form-label">Product Name</label>
@@ -37,8 +40,20 @@
 
             <div class="mb-3">
                 <label for="categoryList" class="form-label">Category</label>
-                <select th:field="*{category}" class="form-select" id="categoryList">
+                <!-- present in case Edit Mode -->
+                <select th:if="${product.category!=null}" th:field="*{category}" class="form-select" id="categoryList">
+                    <option
+                            th:each="item : ${product.brand.categories}"
+                            th:value="${item.id}"
+                            th:text="${item.name}"
+                    >
+                    </option>
                 </select>
+
+                <!-- present in case Create Mode -->
+                <select th:if="${product.category==null}" th:field="*{category}" class="form-select" id="categoryList">
+                </select>
+
             </div>
 
             <div class="form-check mb-3">

@@ -30,11 +30,20 @@ public class Product {
     private Brand brand;
 
     // 1 product can have many productImage, 1 productImage belongs to only 1 product
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    /*
+       + So sánh CascadeType.REMOVE và orphanRemoval :
+            - REMOVE :
+                + entity cha bị xóa -> entity con của entity cha đó cũng bị xóa theo
+                + Nhưng chỉ loại bỏ 1 entity con ra khỏi Collection mà không xóa entity cha (lúc này entity con trở thành orphan) -> entity con đó vẫn không bị xóa khỏi DB
+            - orphanRemoval :
+                + Ngoài việc xóa các thực thể con khi thực thể cha bị xóa, nó còn xóa các thực thể con khi chúng bị loại bỏ khỏi tập hợp,
+                        bất kể trạng thái của thực thể cha.
+    * */
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ProductImage> extraImages = new HashSet<ProductImage>();
 
     // 1 product can have many productDetail, 1 productDetail belongs to only 1 product
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ProductDetail> details = new HashSet<ProductDetail>();
 
     @Column(name="name", length = 256, nullable = false, unique = true)
@@ -104,5 +113,18 @@ public class Product {
         this.getDetails().add(new ProductDetail(name, value, this));
     }
 
+    public void addProductDetail(Integer id, String name, String value)
+    {
+        this.getDetails().add(new ProductDetail(id, name, value, this));
+    }
 
+
+
+    public boolean containsExtraImage(String imageFileName) {
+        for(ProductImage item : this.getExtraImages()) {
+            if(item.getName().equals(imageFileName))
+                return true;
+        }
+        return false;
+    }
 }

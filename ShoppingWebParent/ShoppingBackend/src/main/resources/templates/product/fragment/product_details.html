@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="content_details" th:remove="tag">
+    <div id="divProductDetails">
+        <!-- In case Edit mode -->
+        <th:block th:if="${product.id != null}" th:each="item, itemStatus : ${product.details}">
+            <div class="detail-info d-flex align-items-center mb-3" th:id="${'divDetail'+itemStatus.index}">
+                <div class="row row-cols-2 w-100 g-sm-3">
+                    <div class="col d-flex align-items-center">
+                        <label class="me-2">Name: </label>
+                        <input type="text" name="detailName" class="form-control" th:id="${'detailName'+itemStatus.index}" th:value="${item.name}"/>
+                    </div>
+                    <div class="col d-flex align-items-center">
+                        <label class="me-2">Value: </label>
+                        <input type="text" name="detailValue" class="form-control" th:id="${'detailValue'+itemStatus.index}" th:value="${item.value}" />
+                    </div>
+                </div>
+                <div class="btn text-danger" th:onclick="'removeDivDetailByIndex(' + ${itemStatus.index} + ')'">
+                    <i class="fa-solid fa-trash fa-2x"></i>
+                </div>
+
+                <!-- Hidden Fields to id of product details-->
+                <input type="hidden" name="detailIds" th:value="${item.id}" th:id="${'detailId'+itemStatus.index}" />
+            </div>
+        </th:block>
+        <div class="detail-info d-flex align-items-center mb-3" th:id="${'divDetail'+numberOfExistingDetails}">
+            <div class="row row-cols-2 w-100 g-sm-3">
+                <div class="col d-flex align-items-center">
+                    <label class="me-2">Name: </label>
+                    <input type="text" name="detailName" class="form-control" />
+                </div>
+                <div class="col d-flex align-items-center">
+                    <label class="me-2">Value: </label>
+                    <input type="text" name="detailValue" class="form-control" />
+                </div>
+            </div>
+            <!--        <div class="btn text-danger">-->
+            <!--            <i class="fa-solid fa-trash fa-2x"></i>-->
+            <!--        </div>-->
+
+            <!-- Hidden Fields to store id of new product details -->
+            <input type="hidden" name="detailIds" value="0" />
+        </div>
+
+    </div>
+    <button type="button" class="btn btn-success mt-5" id="btnAddMoreDetail">
+        Add more details
+    </button>
+</div>
+</body>
+</html>
