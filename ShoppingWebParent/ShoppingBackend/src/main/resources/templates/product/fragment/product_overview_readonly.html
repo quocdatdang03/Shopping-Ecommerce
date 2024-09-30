@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="content_overview_readonly" th:remove="tag">
+    <div class="mb-3 row row-cols-1 row-cols-sm-2 gy-3 gy-sm-0">
+        <div class="col">
+            <label class="form-label">Product Name</label>
+            <input th:value="${product.name}" type="text" class="form-control" readonly>
+        </div>
+
+        <div class="col">
+            <label class="form-label">Alias</label>
+            <input th:value="${product.alias}" type="text" class="form-control" readonly>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Brand</label>
+        <input th:value="${product.brand.name}" type="text" class="form-control" readonly>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Category Name</label>
+        <input th:value="${product.category.name}" type="text" class="form-control" readonly>
+    </div>
+
+    <div class="form-check mb-3">
+        <label class="form-check-label">Enabled</label>
+        <input th:checked="${product.enabled==true ? true : false}" class="form-check-input" type="checkbox" value="" disabled>
+    </div>
+
+    <div class="form-check mb-3">
+        <label class="form-check-label">In-Stock</label>
+        <input th:checked="${product.inStock==true ? true : false}" class="form-check-input" type="checkbox" value="" disabled>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Cost</label>
+        <input th:value="${product.cost}" type="number" class="form-control" readonly>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Price</label>
+        <input th:value="${product.price}" type="number" class="form-control" readonly>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Discount percent</label>
+        <input th:value="${product.discountPercent}" type="number" class="form-control" readonly>
+    </div>
+</div>
+</body>
+</html>

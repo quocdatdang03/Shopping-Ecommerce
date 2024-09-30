@@ -4,6 +4,10 @@ import com.shopping.common.entity.Product;
 import com.shoppingbackend.admin.product.exception.ProductNotFoundException;
 import com.shoppingbackend.admin.product.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -13,12 +17,50 @@ import java.util.NoSuchElementException;
 @Service
 public class ProductServiceImpl implements ProductService {
 
+    public static final Integer NUMBER_PRODUCT_PER_PAGE = 5;
+
     @Autowired
     private ProductRepository productRepository;
 
     @Override
     public List<Product> listAllProducts() {
         return (List<Product>) productRepository.findAll();
+    }
+
+    @Override
+    public Page<Product> listProductByPage(Integer pageNumber, String sortField, String sortDir, String keyword, Integer categoryId) {
+        Sort sort;
+        if(sortField==null || sortField.isEmpty())
+            sort = Sort.by("name");
+        else
+            sort = Sort.by(sortField);
+
+        sort = (sortDir.equals("asc")) ? sort.ascending() : sort.descending();
+
+        Pageable pageable = PageRequest.of(pageNumber-1,NUMBER_PRODUCT_PER_PAGE,sort);
+
+
+        if(keyword!=null && !keyword.isBlank())
+        {
+            // in case filter by category and search with keyword :
+            if(categoryId!=null && categoryId>0)
+            {
+                String parentCategoryId = "-"+String.valueOf(categoryId)+"-";
+                return productRepository.searchWithKeywordAndFilterByCategory(categoryId, parentCategoryId, keyword.trim(), pageable);
+            }
+
+            // else in case search with keyword only
+            return productRepository.searchWithKeyword(keyword.trim(), pageable);
+        }
+
+
+        // in case filter by category without search with keyword
+        if(categoryId!=null && categoryId>0) {
+            String parentCategoryId = "-"+String.valueOf(categoryId)+"-";
+            return productRepository.findAllProductByCategory(categoryId, parentCategoryId, pageable);
+        }
+
+        return productRepository.findAll(pageable);
     }
 
     @Override

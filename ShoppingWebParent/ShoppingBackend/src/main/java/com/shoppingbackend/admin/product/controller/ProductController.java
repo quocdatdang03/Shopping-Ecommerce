@@ -11,6 +11,7 @@ import com.shoppingbackend.admin.util.FileUploadUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -57,8 +58,58 @@ public class ProductController {
     @GetMapping("")
     public String listFirstPage(Model model)
     {
-        List<Product> productList = productService.listAllProducts();
-        model.addAttribute("products", productList);
+        Integer pageNumber = 1;
+        String sortField = "name";
+        String sortDir = "asc";
+        String keyword = null;
+        Integer categoryId = 0; // all categories
+        return listProductsBypage(1, sortField, sortDir, keyword, categoryId, model);
+    }
+
+    @GetMapping("/page/{pageNumber}")
+    public String listProductsBypage(
+            @PathVariable("pageNumber") Integer pageNumber,
+            @Param("sortField") String sortField,
+            @Param("sortDir") String sortDir,
+            @Param("keyword") String keyword,
+            @Param("categoryId") Integer categoryId,
+            Model model
+    )
+    {
+        if(sortDir==null || sortDir.isEmpty())
+            sortDir = "asc";
+
+        String reverseSortDir = sortDir.equals("asc") ? "desc" : "asc";
+
+        Page<Product> page = productService.listProductByPage(pageNumber, sortField, sortDir, keyword,categoryId);
+
+        // get List Categories In Form :
+        List<Category> categoryList = categoryService.listCategoryInForm();
+
+        // get information from page:
+        List<Product> products = page.getContent();
+        int totalPages = page.getTotalPages();
+        long totalElements = page.getTotalElements();
+        int firstPageNumber = ((pageNumber-1)*productService.NUMBER_PRODUCT_PER_PAGE)+1;
+        int lastPageNumber = pageNumber*productService.NUMBER_PRODUCT_PER_PAGE;
+        if(lastPageNumber>=totalElements)
+            lastPageNumber = (int) totalElements;
+
+        model.addAttribute("products", products);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("totalElements", totalElements);
+        model.addAttribute("reverseSortDir", reverseSortDir);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("pageNumber", pageNumber);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("firstPageNumber", firstPageNumber);
+        model.addAttribute("lastPageNumber", lastPageNumber);
+        model.addAttribute("categoryList", categoryList);
+
+        if(categoryId!=null)
+            model.addAttribute("selectedCategoryId", categoryId);
+
         return "product/product";
     }
 
@@ -243,7 +294,7 @@ public class ProductController {
         {
             String name = detailNames[i];
             String value = detailValues[i];
-            Integer id = Integer.valueOf(detailIds[i]);
+            Integer id =  Integer.parseInt((detailIds[i]));
 
             if(id!=0)
             {
@@ -291,9 +342,9 @@ public class ProductController {
             productService.deleteProductById(id);
 //            // after delete product, remove image dir of that product:
             String imageProductDirPath = "../product-images/"+id;
-            String extraImageProductDirPath = "../product-images/"+id+"/extraImages";
+            String extraImageProductDirPath = "../product-images/"+id+"/extras";
 
-            // remove extraImages Dir before, then remove product-images Dir:
+            // remove extras Dir before, then remove product-images Dir:
             FileUploadUtil.removeDirectory(extraImageProductDirPath);
             FileUploadUtil.removeDirectory(imageProductDirPath);
 
@@ -319,6 +370,21 @@ public class ProductController {
 
 
             return "/product/product_form";
+        } catch (ProductNotFoundException e) {
+            throw new ProductNotFoundException(e.getMessage());
+        }
+    }
+
+    // VIEW PRODUCT DETAIL:
+    @GetMapping("/details/{id}")
+    public String showProductDetails(@PathVariable("id") Integer id, Model model) throws ProductNotFoundException {
+        try {
+            Product product = productService.getProductById(id);
+
+            model.addAttribute("product", product);
+
+            return "/product/product_detail_modal";
+
         } catch (ProductNotFoundException e) {
             throw new ProductNotFoundException(e.getMessage());
         }

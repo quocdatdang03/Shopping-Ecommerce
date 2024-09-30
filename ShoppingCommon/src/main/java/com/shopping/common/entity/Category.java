@@ -33,6 +33,9 @@ public class Category {
     @Column(name="enabled", nullable = false)
     private boolean enabled;
 
+    @Column(name="all_parent_ids", length = 256, nullable = true)
+    private String allParentIds;
+
     @Transient
     private boolean hasChildren;
 

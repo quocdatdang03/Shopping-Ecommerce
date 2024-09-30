@@ -168,9 +168,19 @@ public class CategoryServiceImpl implements  CategoryService{
     }
 
     /* End Hierarchical Drop Down */
+
     // SAVE :
     @Override
     public Category saveCategory(Category category) {
+        Category parent = category.getParent();
+
+        // set all parent ids for category:
+        if(parent!=null)
+        {
+            String allParentIds = parent.getAllParentIds()==null ? "-" : parent.getAllParentIds();
+            allParentIds += parent.getId()+"-";
+            category.setAllParentIds(allParentIds);
+        }
         return categoryRepository.save(category);
     }
 

@@ -124,7 +124,7 @@ public class CategoryController {
 
         redirectAttributes.addFlashAttribute("message", "The category has been saved successfully");
 
-        return "redirect:/categories/page/1?keyword="+category.getName();
+        return "redirect:/categories/page/1?keyword="+category.getName()+" "+category.getAlias();
 
     }
 

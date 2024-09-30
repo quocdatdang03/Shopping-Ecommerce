@@ -36,7 +36,7 @@ public class ProductImage {
 
     @Transient
     public String getProductExtraImagePath() {
-        return "/product-images/"+product.getId()+"/extraImages/"+this.getName();
+        return "/product-images/"+product.getId()+"/extras/"+this.getName();
     }
 
 }

@@ -24,6 +24,8 @@ function addNextDetail(index) {
                     <input type="text" name="detailValue" class="form-control" />
                 </div>
             </div>
+            <!-- Hidden Fields to store id of new product details -->
+            <input type="hidden" name="detailIds" value="0" />
         </div>
     `;
 

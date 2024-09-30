@@ -33,8 +33,8 @@ public class BrandServiceImpl implements BrandService{
 
         Pageable pageable = PageRequest.of(pageNumber-1, BRAND_NUMBER_PER_PAGE, sort);
 
-        if(keyword!=null && !keyword.isEmpty())
-            return brandRepository.searchByKeyword(keyword, pageable);
+        if(keyword!=null && !keyword.isBlank())
+            return brandRepository.searchByKeyword(keyword.trim(), pageable);
 
         return brandRepository.findAll(pageable);
     }

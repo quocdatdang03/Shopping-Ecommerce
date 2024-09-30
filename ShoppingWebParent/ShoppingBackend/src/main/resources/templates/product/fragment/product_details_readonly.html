@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="content_details_readonly" th:remove="tag">
+    <h1>Product Details</h1>
+    <table th:if="${product.details.size() > 0}" class="table table-dark table-bordered">
+        <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <th:block th:each="item : ${product.details}">
+                <tr>
+                    <td th:text="${item.name}"></td>
+                    <td th:text="${item.value}"></td>
+                </tr>
+            </th:block>
+        </tbody>
+    </table>
+    <h4 th:unless="${product.details.size() > 0}">Product (name:[[${product.name}]]) has no details</h4>
+</div>
+</body>
+</html>
+

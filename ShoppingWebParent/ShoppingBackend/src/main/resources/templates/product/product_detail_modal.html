@@ -1,0 +1,44 @@
+<div class="modal-header">
+    <h1>Product details</h1>
+    <button class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+<div class="modal-body">
+    <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#nav-overview" type="button" role="tab">Overview</button>
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#nav-description" type="button" role="tab">Description</button>
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#nav-images" type="button" role="tab">Images</button>
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#nav-details" type="button" role="tab">Details</button>
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#nav-shipping" type="button" role="tab">Shipping</button>
+        </div>
+    </nav>
+    <div class="tab-content mt-3" id="nav-tabContent">
+        <div class="tab-pane fade show active p-3" id="nav-overview" role="tabpanel">
+            <div th:replace="product/fragment/product_overview_readonly :: content_overview_readonly">
+
+            </div>
+        </div>
+        <div class="tab-pane fade p-3" id="nav-description" role="tabpanel">
+            <div th:replace="product/fragment/product_description_readonly :: content_description_readonly">
+
+            </div>
+        </div>
+        <div class="tab-pane fade p-3" id="nav-images" role="tabpanel">
+            <div th:replace="product/fragment/product_images_readonly :: content_images_readonly">
+
+            </div>
+        </div>
+        <div class="tab-pane fade p-3" id="nav-details" role="tabpanel">
+            <div th:replace="product/fragment/product_details_readonly :: content_details_readonly">
+
+            </div>
+        </div>
+        <div class="tab-pane fade p-3" id="nav-shipping" role="tabpanel">
+            <div th:replace="product/fragment/product_shipping_readonly :: content_shipping_readonly">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+</div>

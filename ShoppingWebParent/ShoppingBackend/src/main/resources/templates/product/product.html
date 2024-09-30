@@ -40,22 +40,32 @@
         <nav class="navbar bg-body-tertiary">
             <div class="container-fluid">
                 <div class="d-flex align-items-center w-100">
-                    <div class="d-flex align-items-center">
-                        <p>Category: </p>
-                    </div>
-                    <div class="d-flex align-items-center">
-                        <form th:action="@{/products/page/1}" method="get" class="d-flex align-items-center" role="search">
-                            <!-- hidden field for sort and pagination -->
-                            <input type="hidden" name="sortField" th:value="${sortField}" />
-                            <input type="hidden" name="sortDir" th:value="${sortDir}" />
 
-                            <input type="search" class="form-control me-2" id="searchInput" name="keyword" th:value="${keyword!=null ? keyword : ''}" placeholder="Enter keyword to search..."/>
-                            <button class="btn btn-outline-success" type="submit">
-                                <i class="fa-solid fa-magnifying-glass"></i>
-                            </button>
+                        <form th:action="@{/products/page/1}" method="get" class="d-flex align-items-center w-auto" role="search" id="searchForm">
+                            <div class="d-flex align-items-center w-100">
+                                <!-- hidden field for sort and pagination -->
+                                <input type="hidden" name="sortField" th:value="${sortField}" />
+                                <input type="hidden" name="sortDir" th:value="${sortDir}" />
+
+                                <input type="search" class="form-control me-2" id="searchInput" name="keyword" th:value="${keyword!=null ? keyword : ''}" placeholder="Enter keyword to search..."/>
+                                <div class="d-flex align-items-center w-100">
+                                    <button class="btn btn-outline-success" type="submit">
+                                        <i class="fa-solid fa-magnifying-glass"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-secondary ms-1" onclick="handleSeeAllProducts()">See All</button>
+                                </div>
+                            </div>
+
+                            <div class="d-flex align-items-center ms-5 w-100">
+                                <label class="me-2">Category: </label>
+                                <select class="form-select" name="categoryId" id="categoryDropDown">
+                                    <option value="0">All categories</option>
+                                    <th:block th:each="item : ${categoryList}">
+                                        <option th:selected="${item.id==selectedCategoryId ? true : false}" th:value="${item.id}">[[${item.name}]]</option>
+                                    </th:block>
+                                </select>
+                            </div>
                         </form>
-                        <button type="button" class="btn btn-secondary ms-1" onclick="handleSeeAllCategories()">See All</button>
-                    </div>
                 </div>
             </div>
         </nav>
@@ -78,21 +88,36 @@
         <table class="table table-primary table-striped table-hover table-bordered table-responsive-xl">
             <thead class="table-info">
             <th>
-                <a th:href="@{'/products/page/'+${pageNumber}+'?sortField=id&sortDir='+${sortField=='id' ? reverseSortDir : sortDir}+${keyword!=null ? '&keyword='+keyword : ''}}">
+                <a th:href="@{'/products/page/'+${pageNumber}+'?sortField=id&sortDir='+${sortField=='id' ? reverseSortDir : sortDir}+${keyword!=null ? '&keyword='+keyword : ''} + ${selectedCategoryId!=null ? '&categoryId='+ selectedCategoryId : ''}}">
                     Brand ID
                     <i th:if="${sortField=='id'}" th:class="${sortDir=='asc' ? 'fa-solid fa-sort-up' : 'fa-solid fa-sort-down'}"></i>
                 </a>
             </th>
             <th>Image</th>
             <th>
-                <a th:href="@{'/products/page/'+${pageNumber}+'?sortField=name&sortDir='+${sortField=='name' ? reverseSortDir : sortDir}+${keyword!=null ? '&keyword='+keyword : ''}}">
+                <a th:href="@{'/products/page/'+${pageNumber}+'?sortField=name&sortDir='+${sortField=='name' ? reverseSortDir : sortDir}+${keyword!=null ? '&keyword='+keyword : ''} + ${selectedCategoryId!=null ? '&categoryId='+ selectedCategoryId : ''}}">
                     Product Name
                     <i th:if="${sortField=='name'}" th:class="${sortDir=='asc' ? 'fa-solid fa-sort-up' : 'fa-solid fa-sort-down'}"></i>
                 </a>
             </th>
-            <th>Brand</th>
-            <th>Category</th>
-            <th>Enabled</th>
+            <th>
+                <a th:href="@{'/products/page/'+${pageNumber}+'?sortField=brand&sortDir='+${sortField=='brand' ? reverseSortDir : sortDir}+${keyword!=null ? '&keyword='+keyword : ''} + ${selectedCategoryId!=null ? '&categoryId='+ selectedCategoryId : ''}}">
+                    Brand
+                    <i th:if="${sortField=='brand'}" th:class="${sortDir=='asc' ? 'fa-solid fa-sort-up' : 'fa-solid fa-sort-down'}"></i>
+                </a>
+            </th>
+            <th>
+                <a th:href="@{'/products/page/'+${pageNumber}+'?sortField=category&sortDir='+${sortField=='category' ? reverseSortDir : sortDir}+${keyword!=null ? '&keyword='+keyword : ''} + ${selectedCategoryId!=null ? '&categoryId='+ selectedCategoryId : ''}}">
+                    Category
+                    <i th:if="${sortField=='category'}" th:class="${sortDir=='asc' ? 'fa-solid fa-sort-up' : 'fa-solid fa-sort-down'}"></i>
+                </a>
+            </th>
+            <th>
+                <a th:href="@{'/products/page/'+${pageNumber}+'?sortField=enabled&sortDir='+${sortField=='enabled' ? reverseSortDir : sortDir}+${keyword!=null ? '&keyword='+keyword : ''} + ${selectedCategoryId!=null ? '&categoryId='+ selectedCategoryId : ''}}">
+                    Enabled
+                    <i th:if="${sortField=='enabled'}" th:class="${sortDir=='asc' ? 'fa-solid fa-sort-up' : 'fa-solid fa-sort-down'}"></i>
+                </a>
+            </th>
             <th>Action</th>
             </thead>
             <tbody>
@@ -116,7 +141,7 @@
                     </td>
                     <td class="">
                         <div class="w-100 h-100 d-flex justify-content-evenly gap-2">
-                            <a class="text-decoration-none" th:href="@{'/products/edit/' + ${item.id}}" title="View product details">
+                            <a class="text-decoration-none btn-view-detail" th:href="@{'/products/details/' + ${item.id}}" title="View product details">
                                 <i class="fa-solid fa-eye fa-2x text-primary d-none d-sm-inline"></i>
                                 <i class="fa-solid fa-eye fa-1x text-primary d-inline d-sm-none"></i>
                             </a>
@@ -135,8 +160,8 @@
         </table>
     </div>
     <!-- Message user not found -->
-   <!-- <h2 th:if="${totalPages < 1 && keyword==null}" class="text-center">Brand List is empty</h2>
-    <h2 th:if="${totalPages < 1 && keyword!=null}" class="text-center">No brands were found with the given keyword: [[${keyword}]]</h2>-->
+    <h2 th:if="${totalPages < 1 && keyword==null}" class="text-center">Product List is empty</h2>
+    <h2 th:if="${totalPages < 1 && keyword!=null}" class="text-center">No products were found with the given keyword: [[${keyword}]]</h2>
     <!-- END TABLE -->
 
     <!-- PAGINATION -->
@@ -144,14 +169,14 @@
         <ul class="pagination justify-content-center">
             <!-- btn first page -->
             <li class="page-item" th:classappend="${pageNumber <= 1} ? 'disabled' : ''">
-                <a th:if="${pageNumber > 1}" class="page-link" th:href="@{'/brands/page/1?sortField='+${sortField}+'&sortDir='+${sortDir}+ ${keyword!=null ? '&keyword='+ keyword : ''}}">First Page</a>
+                <a th:if="${pageNumber > 1}" class="page-link" th:href="@{'/products/page/1?sortField='+${sortField}+'&sortDir='+${sortDir}+ ${keyword!=null ? '&keyword='+ keyword : ''} + ${selectedCategoryId!=null ? '&categoryId='+ selectedCategoryId : ''}}">First Page</a>
                 <a th:unless="${pageNumber > 1}" class="page-link">First Page</a>
             </li>
             <!-- End btn first page -->
 
             <!-- btn previous -->
             <li class="page-item" th:classappend="${pageNumber <= 1} ? 'disabled' : ''">
-                <a th:if="${pageNumber > 1}" class="page-link" th:href="@{'/brands/page/'+${pageNumber - 1}+'?sortField='+${sortField}+'&sortDir='+${sortDir}+ ${keyword!=null ? '&keyword='+ keyword : ''}}">
+                <a th:if="${pageNumber > 1}" class="page-link" th:href="@{'/products/page/'+${pageNumber - 1}+'?sortField='+${sortField}+'&sortDir='+${sortDir}+ ${keyword!=null ? '&keyword='+ keyword : ''} + ${selectedCategoryId!=null ? '&categoryId='+ selectedCategoryId : ''}}">
                     <span>&laquo;</span>
                 </a>
                 <a th:unless="${pageNumber > 1}" class="page-link">
@@ -170,7 +195,7 @@
 
                 <a th:if="${pageNumber != index}"
                    class="page-link"
-                   th:href="@{'/brands/page/' + ${index} + '?sortField=' + ${sortField} +'&sortDir='+${sortDir}+ ${keyword != null ? '&keyword=' + keyword : ''}}">
+                   th:href="@{'/products/page/' + ${index} + '?sortField=' + ${sortField} +'&sortDir='+${sortDir}+ ${keyword != null ? '&keyword=' + keyword : ''} + ${selectedCategoryId!=null ? '&categoryId='+ selectedCategoryId : ''}}">
                     [[${index}]]
                 </a>
 
@@ -180,7 +205,7 @@
 
             <!-- btn next -->
             <li class="page-item" th:classappend="${pageNumber >= totalPages} ? 'disabled' : ''">
-                <a th:if="${pageNumber < totalPages}" class="page-link" th:href="@{'/brands/page/'+${pageNumber + 1}+'?sortField='+${sortField}+'&sortDir='+${sortDir}+ ${keyword!=null ? '&keyword='+ keyword : ''}}">
+                <a th:if="${pageNumber < totalPages}" class="page-link" th:href="@{'/products/page/'+${pageNumber + 1}+'?sortField='+${sortField}+'&sortDir='+${sortDir}+ ${keyword!=null ? '&keyword='+ keyword : ''} + ${selectedCategoryId!=null ? '&categoryId='+ selectedCategoryId : ''}}">
                     <span>&raquo;</span>
                 </a>
                 <a th:unless="${pageNumber < totalPages}" class="page-link">
@@ -190,14 +215,14 @@
             <!-- End btn next -->
             <!-- btn last page -->
             <li class="page-item" th:classappend="${pageNumber >= totalPages} ? 'disabled' : ''">
-                <a th:if="${pageNumber < totalPages}" class="page-link" th:href="@{'/brands/page/'+${totalPages}+'?sortField='+${sortField}+'&sortDir='+${sortDir}+ ${keyword!=null ? '&keyword='+ keyword : ''}}">Last Page</a>
+                <a th:if="${pageNumber < totalPages}" class="page-link" th:href="@{'/products/page/'+${totalPages}+'?sortField='+${sortField}+'&sortDir='+${sortDir}+ ${keyword!=null ? '&keyword='+ keyword : ''} + ${selectedCategoryId!=null ? '&categoryId='+ selectedCategoryId : ''}}">Last Page</a>
                 <a th:unless="${pageNumber < totalPages}" class="page-link">Last Page</a>
             </li>
             <!-- End btn last page -->
         </ul>
     </nav>
     <div th:if="${totalPages>1}" class="text-center">
-        <p>[[${firstPageNumber}]] - [[${lastPageNumber}]] of [[${totalElements}]] brands</p>
+        <p>[[${firstPageNumber}]] - [[${lastPageNumber}]] of [[${totalElements}]] products</p>
     </div>
 
 </div>
@@ -226,17 +251,19 @@
     </div>
 </div>
 
+<!-- MODAL PRODUCT DETAILS -->
+<div class="modal modal-xl fade" id="productDetailModal">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+
 <script type="text/javascript">
     // INITIALIZE TOOLTIPS OF BOOTSTRAP:
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 
-
-    /*
-    *  <a class="text-decoration-none btn-delete" th:href="@{'/categories/delete/' + ${item.id}}" th:userId="${item.id}">
-                            <i class="fa-duotone fa-solid fa-trash fa-2x text-danger"></i>
-                        </a>
-    * */
 
     // using jquery:
     $(document).ready(function (){
@@ -270,12 +297,31 @@
             e.preventDefault(); // Ngăn chặn load behavior khi click thẻ <a>
             formLogout.submit();
         })
+
+        // handle view product details:
+        $('.btn-view-detail').on('click', function (e) {
+            e.preventDefault();
+
+            // get request link mà return về đoạn code html chứa content của product detail modal :
+            const linkViewProductDetail = $(this).attr('href');
+
+            // find : lấy ra class .model-content
+            // load : url mà trả về code html và append nó vào .model-content
+            $('#productDetailModal').modal("show").find('.modal-content').load(linkViewProductDetail)
+            console.log('CLICK');
+        })
+
+        // handle when categoryDropDown changes -> submit search form:
+        $('#categoryDropDown').on('change', function () {
+            $('#searchForm').submit();
+        })
+
     })
 
     // handle when click btn See All :
-    function handleSeeAllCategories()
+    function handleSeeAllProducts()
     {
-        window.location = "[[@{/brands}]]";
+        window.location = "[[@{/products}]]";
     }
 
 
