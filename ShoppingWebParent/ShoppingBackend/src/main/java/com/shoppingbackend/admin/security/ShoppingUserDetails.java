@@ -83,4 +83,14 @@ public class ShoppingUserDetails implements UserDetails {
         this.user.setLastName(lastName);
     }
 
+    // check role:
+    public boolean hasRole(String roleName) {
+        Set<Role> rolesOfUser = user.getRoles();
+        for(Role role : rolesOfUser) {
+            if(role.getName().equals(roleName))
+                return true;
+        }
+        return false;
+    }
+
 }

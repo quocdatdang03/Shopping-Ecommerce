@@ -16,7 +16,7 @@ import java.util.Set;
 @Table(name="products")
 public class Product {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     // 1 category can have many products, 1 product belongs to only 1 category

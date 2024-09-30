@@ -19,12 +19,14 @@
         </div>
         <div class="col-12 col-md-8 align-items-center my-auto">
             <div class="row row-cols-2 row-cols-lg-4 g-2">
-                <div class="col">
-                    <a th:href="@{/products/new}" class="btn btn-secondary w-100"><i class="fa-solid fa-user-plus"></i> <span>Add New Product</span></a>
-                </div>
-                <div class="col">
-                    <a th:href="@{/products/export/csv}" class="btn btn-secondary w-100"><i class="fa-solid fa-file-csv"></i> <span>Export to CSV</span></a>
-                </div>
+               <th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+                   <div class="col">
+                       <a th:href="@{/products/new}" class="btn btn-secondary w-100"><i class="fa-solid fa-user-plus"></i> <span>Add New Product</span></a>
+                   </div>
+                   <div class="col">
+                       <a th:href="@{/products/export/csv}" class="btn btn-secondary w-100"><i class="fa-solid fa-file-csv"></i> <span>Export to CSV</span></a>
+                   </div>
+               </th:block>
                 <!--                <div class="col">-->
                 <!--                    <a th:href="@{/categories/export/excel}" class="btn btn-secondary w-100"><i class="fa-solid fa-file-excel"></i> <span>Export to Excel</span></a>-->
                 <!--                </div>-->
@@ -112,7 +114,7 @@
                     <i th:if="${sortField=='category'}" th:class="${sortDir=='asc' ? 'fa-solid fa-sort-up' : 'fa-solid fa-sort-down'}"></i>
                 </a>
             </th>
-            <th>
+            <th sec:authorize="hasAnyAuthority('Admin', 'Editor')">
                 <a th:href="@{'/products/page/'+${pageNumber}+'?sortField=enabled&sortDir='+${sortField=='enabled' ? reverseSortDir : sortDir}+${keyword!=null ? '&keyword='+keyword : ''} + ${selectedCategoryId!=null ? '&categoryId='+ selectedCategoryId : ''}}">
                     Enabled
                     <i th:if="${sortField=='enabled'}" th:class="${sortDir=='asc' ? 'fa-solid fa-sort-up' : 'fa-solid fa-sort-down'}"></i>
@@ -131,28 +133,37 @@
                     <td th:text="${item.name}"></td>
                     <td th:text="${item.brand.name}"></td>
                     <td th:text="${item.category.name}"></td>
-                    <td class="text-center">
-                        <a th:if="${item.enabled == true}" th:href="@{'/products/'+${item.id}+'/enabled/false'}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Click to disable this product">
-                            <i class="fa-solid fa-circle-check fa-2x text-success"></i>
-                        </a>
-                        <a th:if="${item.enabled == false}" th:href="@{'/products/'+${item.id}+'/enabled/true'}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Click to enable this product">
-                            <i class="fa-solid fa-circle fa-2x text-secondary"></i>
-                        </a>
-                    </td>
+                    <th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+                        <td class="text-center">
+                            <a th:if="${item.enabled == true}" th:href="@{'/products/'+${item.id}+'/enabled/false'}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Click to disable this product">
+                                <i class="fa-solid fa-circle-check fa-2x text-success"></i>
+                            </a>
+                            <a th:if="${item.enabled == false}" th:href="@{'/products/'+${item.id}+'/enabled/true'}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Click to enable this product">
+                                <i class="fa-solid fa-circle fa-2x text-secondary"></i>
+                            </a>
+                        </td>
+                    </th:block>
+
                     <td class="">
                         <div class="w-100 h-100 d-flex justify-content-evenly gap-2">
                             <a class="text-decoration-none btn-view-detail" th:href="@{'/products/details/' + ${item.id}}" title="View product details">
                                 <i class="fa-solid fa-eye fa-2x text-primary d-none d-sm-inline"></i>
                                 <i class="fa-solid fa-eye fa-1x text-primary d-inline d-sm-none"></i>
                             </a>
-                            <a class="text-decoration-none" th:href="@{'/products/edit/' + ${item.id}}" title="Edit product">
-                                <i class="fa-sharp fa-solid fa-pen-to-square fa-2x text-info d-none d-sm-inline"></i>
-                                <i class="fa-sharp fa-solid fa-pen-to-square fa-1x text-info d-inline d-sm-none"></i>
-                            </a>
-                            <a class="text-decoration-none btn-delete" th:href="@{'/products/delete/' + ${item.id}}" th:userId="${item.id}" title="Delete product">
-                                <i class="fa-duotone fa-solid fa-trash fa-2x text-danger d-none d-sm-inline"></i>
-                                <i class="fa-duotone fa-solid fa-trash fa-1x text-danger d-inline d-sm-none"></i>
-                            </a>
+                            <th:block sec:authorize="hasAnyAuthority('Admin', 'Editor', 'Salesperson')">
+                                <a class="text-decoration-none" th:href="@{'/products/edit/' + ${item.id}}" title="Edit product">
+                                    <i class="fa-sharp fa-solid fa-pen-to-square fa-2x text-info d-none d-sm-inline"></i>
+                                    <i class="fa-sharp fa-solid fa-pen-to-square fa-1x text-info d-inline d-sm-none"></i>
+                                </a>
+                            </th:block>
+
+                            <th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+                                <a class="text-decoration-none btn-delete" th:href="@{'/products/delete/' + ${item.id}}" th:userId="${item.id}" title="Delete product">
+                                    <i class="fa-duotone fa-solid fa-trash fa-2x text-danger d-none d-sm-inline"></i>
+                                    <i class="fa-duotone fa-solid fa-trash fa-1x text-danger d-inline d-sm-none"></i>
+                                </a>
+                            </th:block>
+
                         </div>
                     </td>
                 </tr>

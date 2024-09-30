@@ -62,7 +62,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/users/**").hasAuthority("Admin")
                 .antMatchers("/categories/**").hasAnyAuthority("Admin", "Editor")
-                .antMatchers("/products/**").hasAnyAuthority("Admin", "Editor", "Salesperson", "Shipper")
+                // --------- Start authorize for url /products :
+                // Role Admin, Editor, Salespeson, Shipper can view product list and detail
+                .antMatchers("/products", "/products/", "/products/page/**", "/products/details/**")
+                    .hasAnyAuthority("Admin", "Editor", "Salesperson", "Shipper")
+                // Role Admin, Editor can create new Product and delete product
+                .antMatchers("/products/new", "/products/delete/**")
+                    .hasAnyAuthority("Admin", "Editor")
+                // Role Admin, Editor, Salesperson can edit, but Admin, Editor can edit all info of Product, Salesperson just edit only price, cost, discount percent
+                .antMatchers("/products/edit/**", "/products/save")
+                    .hasAnyAuthority("Admin", "Editor", "Salesperson")
+                // Role Admin, Editor can do Other action with Product (such as Enabled Product,...)
+                .antMatchers("/products/**").hasAnyAuthority("Admin", "Editor")
+                // --------- End authorize for url /products :
                 .anyRequest()
                     .authenticated()
                 .and()

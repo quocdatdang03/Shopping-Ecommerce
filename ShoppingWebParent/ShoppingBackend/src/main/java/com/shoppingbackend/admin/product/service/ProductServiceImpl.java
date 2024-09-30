@@ -101,6 +101,23 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public Product saveProductPrice(Product product) throws ProductNotFoundException{
+        // This is method for Authorize Role Salesperson (Update only price, cost, discount percent)
+        try {
+            Product productInDB = productRepository.findById(product.getId()).get();
+            productInDB.setPrice(product.getPrice());
+            productInDB.setCost(product.getCost());
+            productInDB.setDiscountPercent(product.getDiscountPercent());
+
+            return productRepository.save(productInDB);
+        }
+        catch(NoSuchElementException e)
+        {
+            throw new ProductNotFoundException("Could not find any product with id : "+product.getId());
+        }
+    }
+
+    @Override
     public void updateEnabledStatus(boolean enabledStatus, Integer id) {
         productRepository.updateEnabledStatus(enabledStatus, id);
     }

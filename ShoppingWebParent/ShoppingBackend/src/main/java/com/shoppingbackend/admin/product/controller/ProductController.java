@@ -7,12 +7,14 @@ import com.shoppingbackend.admin.category.exception.CategoryNotFoundException;
 import com.shoppingbackend.admin.category.service.CategoryServiceImpl;
 import com.shoppingbackend.admin.product.exception.ProductNotFoundException;
 import com.shoppingbackend.admin.product.service.ProductServiceImpl;
+import com.shoppingbackend.admin.security.ShoppingUserDetails;
 import com.shoppingbackend.admin.util.FileUploadUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -132,14 +134,30 @@ public class ProductController {
     @PostMapping("/save")
     public String saveProduct(
             @ModelAttribute("product") Product product,
-            @RequestParam("inputImageFile") MultipartFile mainImageMultipartFile,
-            @RequestParam("inputExtraImageFile") MultipartFile[] extraImagesMultipartFiles,
-            @RequestParam("detailName") String[] detailNames,
-            @RequestParam("detailValue") String[] detailValues,
+            @RequestParam(value = "inputImageFile", required = false) MultipartFile mainImageMultipartFile,
+            @RequestParam(value = "inputExtraImageFile", required = false) MultipartFile[] extraImagesMultipartFiles,
+            @RequestParam(value = "detailName", required = false) String[] detailNames,
+            @RequestParam(value = "detailValue", required = false) String[] detailValues,
             @RequestParam(value = "imageIds", required = false) String[] extraImageIds,
             @RequestParam(value = "imageNames", required = false) String[] extraImageNames,
             @RequestParam(value = "detailIds", required = false) String[] detailIds,
-            RedirectAttributes redirectAttributes) throws IOException {
+            @AuthenticationPrincipal ShoppingUserDetails shoppingUserDetails,
+            RedirectAttributes redirectAttributes) throws IOException, ProductNotFoundException {
+
+        // handle save by role Salesperson (Update only price, cost, discount percent for Product):
+        // Nếu mà user (đã authentication, tức đã Login) mà có role là Salesperson thì thực hiện code này:
+        if(shoppingUserDetails.hasRole("Salesperson"))
+        {
+            try {
+                productService.saveProductPrice(product);
+                redirectAttributes.addFlashAttribute("message","The Product( name: "+product.getName()+" ) has been saved successfully!");
+
+                return "redirect:/products";
+            } catch (ProductNotFoundException e) {
+                throw new ProductNotFoundException(e.getMessage());
+            }
+        }
+
 
         // ---------- 1. handle product images:
         // set main image Product
@@ -175,7 +193,7 @@ public class ProductController {
     // ------- for product images :
     private void setMainImageName(MultipartFile multipartFile, Product product) {
         // in case file input has uploaded file:
-        if(!multipartFile.isEmpty()) {
+        if(multipartFile!=null && !multipartFile.isEmpty()) {
             // get uploaded file from file input:
             String nameUploadedFile = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 
@@ -204,7 +222,7 @@ public class ProductController {
 
     private void setNewExtraImageNames(MultipartFile[] multipartFiles, Product product) {
         // Nếu mà có thêm file new extraImage thì set, không thì không làm gì cả
-        if(multipartFiles.length > 0)
+        if(multipartFiles!=null && multipartFiles.length > 0)
         {
             for(MultipartFile multipartFile : multipartFiles) {
                 // Nếu multipartFile mà empty thì add nó vào extraImages
