@@ -92,7 +92,7 @@
                     <td th:text="${item.id}"></td>
                     <td>
                         <div class="d-flex justify-content-center">
-                            <img class="img-thumbnail img-fluid" th:src="@{${item.photoImagePath}}" style="min-width:100px; max-width: 100px; height: 100px; object-fit: cover; object-position: center;" />
+                            <img class="img-thumbnail img-fluid" th:src="@{${item.photoImagePath}}" style="min-width:100px; max-width: 100px; height: 100px; object-fit: contain; object-position: center;" />
                         </div>
                     </td>
                     <td th:text="${item.firstName}"></td>

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <div th:replace="/fragment/fragments :: html_head(${pageTitle}, 'tag')">
+    </div>
+    <style>
+        .image-container {
+            width: 100%;
+            padding-top: 75%; /* Tỷ lệ 4:3 (điều chỉnh nếu cần) */
+            position: relative;
+            overflow: hidden;
+        }
+
+        .image-container img {
+            position: absolute;
+            top : 0;
+            left:0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            object-position: center;
+            transition: transform 0.3s ease;
+        }
+
+        .image-container img:hover {
+            transform: scale(1.1); /* Phóng to hình ảnh khi di chuột */
+        }
+
+        .product-title {
+            font-size: 16px;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2; /* Giới hạn văn bản trong 2 dòng */
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .nav-tabs .nav-link.active {
+            border-top: 3px solid #0573f0;
+        }
+
+        .nav-tabs .nav-link:hover {
+            background-color: #0056b3; /* Màu nền khi hover */
+            color: #fff;
+        }
+
+        /* CSS for extra image: */
+        .extra-image-container {
+            max-width: 100px; /* Max width of container */
+            max-height: 100px;
+            display: flex;
+            align-items : center;
+            justify-content: center;
+        }
+
+        .extra-image {
+            max-width: 100%; /* Ensures the image doesn't exceed the container size */
+            height: 100%;    /* Maintains aspect ratio */
+            object-fit: contain;
+            opacity: 0.5;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .extra-image:hover {
+            opacity: 1;
+        }
+
+        .extra-image.active {
+            opacity:1;
+        }
+
+        @media (max-width: 768px) {
+            .extra-image-container {
+                max-width: 80px; /* Resize for smaller screens */
+            }
+        }
+
+        @media (max-width: 576px) {
+            .extra-image-container {
+                max-width: 60px; /* Resize for very small screens */
+            }
+        }
+
+        .btn-slider {
+            position: absolute;
+            top : 50%;
+            background-color: transparent;
+            border:none;
+        }
+        .btn-slider-previous {
+            left: 20%;
+            transform: translate(-50%,-20%);
+        }
+
+        .btn-slider-next {
+            right: 20%;
+            transform: translate(-50%,-20%);
+        }
+
+        .image-slider {
+            width: 100%;
+            padding-top: 75%; /* Tỷ lệ 4:3 (điều chỉnh nếu cần) */
+            position: relative;
+            overflow: hidden;
+        }
+
+        .image-slider img {
+            position: absolute;
+            top : 0;
+            left:0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            object-position: center;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div th:replace="/fragment/header :: web_header">
+
+    </div>
+    <!-- End Header -->
+
+    <!--Product Info -->
+    <div class="container">
+        <div class="row row-cols-1 row-cols-lg-2 gy-5 gy-lg-0">
+            <div class="col border-success">
+                <div class="image-container">
+                    <img id="bigImage" th:src="@{${product.mainImagePath}}" th:alt="${product.mainImage}" indexImage="0"/>
+                </div>
+                <div class="d-flex flex-wrap justify-content-center mt-3 gap-2">
+                    <div class="extra-image-container border mx-2 p-2">
+                        <img class="img-fluid extra-image active" th:src="@{${product.mainImagePath}}" th:alt="${product.mainImage}" indexImage="0"/>
+                    </div>
+                    <th:block th:each="item, itemStatus : ${product.extraImages}">
+                        <div class="extra-image-container border mx-2 p-2">
+                            <img class="img-fluid extra-image" th:src="@{${item.productExtraImagePath}}" th:alt="${item.name}" th:indexImage="${itemStatus.count}"/>
+                        </div>
+                    </th:block>
+                </div>
+            </div>
+            <div class="col border-primary">
+                <!-- Bread crumb -->
+                <nav class="mb-2">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+                        <th:block th:each="item : ${categoryParentList}">
+                            <th:block th:if="${item.enabled==true}">
+                                <li th:if="${item.alias != categoryAlias}" class="breadcrumb-item">
+                                    <a th:href="@{'/c/'+ ${item.alias}}" th:text="${item.name}"></a>
+                                </li>
+                                <li th:if="${item.alias == categoryAlias}"
+                                    class="breadcrumb-item active"
+                                    th:text="${item.name}">
+                                </li>
+                            </th:block>
+                        </th:block>
+                        <li class="breadcrumb-item">
+                            <span th:text="${product.shortName}"></span>
+                        </li>
+                    </ol>
+                </nav>
+                <!--End Bread crumb -->
+                <h2 class="fs-4 fw-semibold mb-3" th:text="${product.name}"></h2>
+                <div>
+                    <p class="fs-4" th:if="${product.discountPercent>0}">
+                        <s style="color: #a3a8ad;">
+                            <span th:replace="fragment/fragments :: product_price(${product.price})"></span>
+                        </s>
+                        <span class="fw-bold" style="color:#48515b;">
+                            <span th:replace="fragment/fragments :: product_price(${product.discountPrice})"></span>
+                            <i class="fw-normal text-danger-emphasis fs-5">
+                                ([[${#numbers.formatDecimal(product.discountPercent, 1, THOUSANDS_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]]% off)
+                            </i>
+                        </span>
+                    </p>
+                    <p class="fs-4" th:unless="${product.discountPercent>0}">
+                        <span class="fw-bold" style="color:#48515b;">
+                            <span th:replace="fragment/fragments :: product_price(${product.price})"></span>
+                        </span>
+                    </p>
+                </div>
+                <!-- Short Description -->
+                <div class="">
+                    <h5 class="fw-bold">Key Features</h5>
+                    <div th:utext="${product.shortDescription}">
+                    </div>
+                </div>
+                <!-- End Short Description -->
+                <div class="mb-3">
+                    <!-- Quantity -->
+                    <div></div>
+                    <button class="btn btn-dark fw-bold rounded-0 px-3">Add to cart</button>
+                </div>
+
+                <div class="border-top pt-2">
+                    <p class="mb-1">
+                        <b class="pe-2">Brand:</b> <span>[[${product.brand.name}]]</span>
+                    </p>
+                    <p>
+                        <b class="pe-2">Category:</b> <a class="text-decoration-none" th:href="@{'/c/'+${product.category.alias}}">[[${product.category.name}]]</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <ul class="nav nav-tabs mt-5" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#description-tab-div" type="button" role="tab">Description</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#review-tab-div" type="button" role="tab">Review</button>
+            </li>
+        </ul>
+        <div class="tab-content mt-5" id="myTabContent">
+            <div class="tab-pane fade show active" id="description-tab-div" role="tabpanel">
+                <div class="mb-5">
+                    <h1>More about the product</h1>
+                    <div th:utext="${product.fullDescription}"></div>
+                </div>
+                <div class="row row-cols-1 row-cols-lg-2">
+                    <h1 class="col">Product Details</h1>
+                    <div class="col mt-3">
+                        <ul>
+                            <th:block th:each="item : ${product.details}">
+                                <li class="py-1"><b class="pe-2">[[${item.name}]]:</b><span>[[${item.value}]]</span></li>
+                            </th:block>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="review-tab-div" role="tabpanel">Review</div>
+        </div>
+
+    </div>
+    <!--End Product Info -->
+
+    <!-- Footer -->
+    <div th:replace="/fragment/footer :: web_footer">
+    </div>
+    <!-- End Footer -->
+
+    <div class="modal fade" id="sliderModal" tabindex="-1">
+        <button style="position: absolute; top:10px; right:20px; border:none; background-color:transparent;" type="button" data-bs-dismiss="modal">
+            <i style="color: white;" class="fa-solid fa-xmark fa-2x"></i>
+        </button>
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div id="imageSlider" class="carousel slide bg-dark">
+                    <div class="carousel-indicators">
+                        <button type="button" data-bs-target="#imageSlider" data-bs-slide-to="0" class="active"></button>
+                        <th:block th:each="item, itemStatus : ${product.extraImages}">
+                            <button type="button" data-bs-target="#imageSlider" th:data-bs-slide-to="${itemStatus.count}"></button>
+                        </th:block>
+                    </div>
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <div class="image-slider">
+                                <img th:src="@{${product.mainImagePath}}" th:alt="${product.mainImage}">
+                            </div>
+                        </div>
+                        <th:block th:each="item, itemStatus : ${product.extraImages}">
+                            <div class="carousel-item">
+                                <div class="image-slider">
+                                    <img th:src="@{${item.productExtraImagePath}}" th:alt="${item.name}">
+                                </div>
+                            </div>
+                        </th:block>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="btn-slider btn-slider-previous" type="button" data-bs-target="#imageSlider" data-bs-slide="prev">
+            <i style="color:white;" class="fa-solid fa-angle-left fa-2x"></i>
+        </button>
+        <button class="btn-slider btn-slider-next" type="button" data-bs-target="#imageSlider" data-bs-slide="next">
+            <i style="color:white;" class="fa-solid fa-angle-right fa-2x"></i>
+        </button>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var bigImage = $('#bigImage');
+            // handle show extra Image on bigImage:
+            $('.extra-image').on('click', function() {
+                const currentImageSrc = $(this).attr("src");
+                const currentImageIndex = parseInt($(this).attr("indexImage"));
+                $('.extra-image').removeClass('active');
+                $(this).addClass("active")
+                bigImage.attr("src", currentImageSrc);
+                bigImage.attr("indexImage", currentImageIndex);
+            })
+
+            // handle show image slider :
+            bigImage.on('click', function() {
+                // show slider:
+                $('#sliderModal').modal("show")
+
+                // get indexImage of current Image:
+                const currentImageIndex = parseInt($(this).attr("indexImage"));
+                // set current active image of slider :
+                $('#imageSlider').carousel(currentImageIndex);
+            })
+
+        })
+    </script>
+</body>
+</html>

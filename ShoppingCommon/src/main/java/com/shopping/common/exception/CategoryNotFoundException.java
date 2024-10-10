@@ -1,6 +1,4 @@
-package com.shoppingbackend.admin.category.exception;
-
-import com.shoppingbackend.admin.user.exception.UserNotFoundException;
+package com.shopping.common.exception;
 
 public class CategoryNotFoundException extends Exception {
     public CategoryNotFoundException(String message) {

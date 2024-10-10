@@ -1,8 +1,8 @@
 package com.shoppingbackend.admin.category.service;
 
 import com.shopping.common.entity.Category;
+import com.shopping.common.exception.CategoryNotFoundException;
 import com.shoppingbackend.admin.category.dto.CategoryPageInfo;
-import com.shoppingbackend.admin.category.exception.CategoryNotFoundException;
 import com.shoppingbackend.admin.category.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

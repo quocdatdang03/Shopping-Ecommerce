@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en">
+<head>
+    <div th:replace="/fragment/fragments :: html_head(${pageTitle}, 'tag')">
+    </div>
+
+    <!-- rich text editor -->
+    <link rel="stylesheet" th:href="@{/richtext/richtext.min.css}"/>
+    <script type="text/javascript" th:src="@{/richtext/jquery.richtext.min.js}"></script>
+
+    <style>
+        .image-container {
+            width: 100%; /* Đảm bảo container đầy đủ chiều rộng của cột */
+            padding-top: 75%; /* Giữ tỷ lệ 1:1 cho hình ảnh, tương đương với hình vuông */
+            position: relative; /* Đảm bảo phần tử con bên trong được định vị chính xác */
+        }
+
+        .image-container img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            max-width: 100%; /* Điều chỉnh kích thước tối đa */
+            max-height: 300px;
+        }
+
+    </style>
+</head>
+<body>
+<!-- Header -->
+<div th:replace="/fragment/header :: admin_header">
+</div>
+<!-- END Header -->
+
+<div class="container mt-5">
+    <h1 class="mb-5">Manage Setting | [[${pageTitle}]]</h1>
+        <nav>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#nav-general" type="button" role="tab">General</button>
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#nav-countries" type="button" role="tab">Countries</button>
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#nav-states" type="button" role="tab">States</button>
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#nav-mailServer" type="button" role="tab">Mail Server</button>
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#nav-mailTemplates" type="button" role="tab">Mail Templates</button>
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#nav-payment" type="button" role="tab">Payment</button>
+            </div>
+        </nav>
+        <div class="tab-content mt-3" id="nav-tabContent">
+            <div class="tab-pane fade show active p-3" id="nav-general" role="tabpanel">
+                <div th:replace="setting/fragment/setting_general :: content_general">
+                </div>
+            </div>
+            <div class="tab-pane fade p-3" id="nav-countries" role="tabpanel">
+                <div th:replace="setting/fragment/setting_countries :: content_countries">
+                </div>
+            </div>
+            <div class="tab-pane fade p-3" id="nav-states" role="tabpanel">
+                <div th:replace="setting/fragment/setting_states :: content_states">
+                </div>
+            </div>
+            <div class="tab-pane fade p-3" id="nav-mailServer" role="tabpanel">
+
+            </div>
+            <div class="tab-pane fade p-3" id="nav-mailTemplates" role="tabpanel">
+
+            </div>
+            <div class="tab-pane fade p-3" id="nav-payment" role="tabpanel">
+
+            </div>
+        </div>
+
+</div>
+
+<!-- Footer -->
+<div th:replace="/fragment/footer :: admin_footer">
+</div>
+<!-- End Footer -->
+
+
+
+<script type="text/javascript">
+
+    const contextPath = "[[@{/}]]";
+    // create CSRF HeaderName and CSRF Value:
+    var csrfHeaderName = "[[${_csrf.headerName}]]";
+    var csrfValue = "[[${_csrf.token}]]";
+
+    $(document).ready(function () {
+
+        // Handle Change Image when upload input type file:
+        $('#photoFile').change(function () {
+            // Lấy ra file size
+            var fileSize = this.files[0].size
+            alert(fileSize)
+            // check if fileSize > 1MB (1048567) -> not accept:
+            if (fileSize > 5048567) {
+                this.setCustomValidity("file size must less than 1MB!")
+                this.reportValidity()
+            } else {
+                this.setCustomValidity("")
+                showImageThumbnail(this)
+            }
+        })
+    })
+
+    // Handle Change Image when upload input type file:
+    function showImageThumbnail(fileInput) {
+        // Lấy ra đối tượng FileList :
+        var file = fileInput.files[0];
+
+        var fileReader = new FileReader();
+
+        fileReader.onload = function (e) {
+            $('#imgPhoto').attr("src", e.target.result)
+        }
+        fileReader.readAsDataURL(file)
+    }
+</script>
+
+<script type="text/javascript" th:src="@{/js/setting_countries.js}"></script>
+<script type="text/javascript" th:src="@{/js/setting_states.js}"></script>
+
+</body>
+</html>

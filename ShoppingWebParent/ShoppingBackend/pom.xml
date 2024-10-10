@@ -51,6 +51,13 @@
             <version>1.4.2</version>
         </dependency>
 
+        <!-- Lib for Spring Security Testing -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+        </dependency>
+
+
 
 
 

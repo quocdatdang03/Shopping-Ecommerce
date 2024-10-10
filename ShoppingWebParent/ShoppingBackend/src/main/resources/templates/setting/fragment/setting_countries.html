@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div th:fragment="content_countries" th:remove="tag">
+        <div class="alert alert-info" style="border-left: 5px solid #9febf8; border-radius: 1px;">
+            Manage countries which will be displayed in customer registration form, shipping address,...
+            <br/>
+            Click load Country List first.
+        </div>
+        <div class="d-none alert alert-info alert-dismissible fade d-inline-block" role="alert" id="toastMessage">
+            <i class="fa-solid fa-circle-info"></i>
+            <span id="toastMessageText"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <div class="my-3">
+            <button class="btn btn-primary" id="btnLoadCountryList">Load Country List</button>
+        </div>
+        <div>
+            <select class="form-select" style="min-height : 300px;" id="dropDownListCountry" size="3">
+
+            </select>
+        </div>
+        <div class="row mt-4">
+           <div class="col col-lg">
+               <label class="form-label" id="labelCountryName">Country Name: </label>
+               <div class="">
+                   <input type="text" class="form-control" id="inputCountryName"/>
+               </div>
+           </div>
+            <div class="col col-lg">
+                <label class="form-label">Country Code: </label>
+                <div class="">
+                    <input type="text" class="form-control" id="inputCountryCode"/>
+                </div>
+            </div>
+            <div class="col-lg align-self-end mt-3 mt-lg-0">
+                <button class="btn btn-success mx-1" id="btnAddCountry">Add</button>
+                <button class="btn btn-secondary mx-1" id="btnUpdateCountry" disabled>Update</button>
+                <button class="btn btn-danger mx-1" id="btnDeleteCountry" disabled>Delete</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

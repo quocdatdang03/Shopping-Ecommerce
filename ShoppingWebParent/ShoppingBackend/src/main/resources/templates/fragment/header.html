@@ -50,8 +50,40 @@
                     <li class="nav-item" sec:authorize="hasAnyAuthority('Admin', 'Editor')">
                         <a class="nav-link" th:href="@{/menus}">Menus</a>
                     </li>
-                    <li class="nav-item" sec:authorize="hasAuthority('Admin')">
-                        <a class="nav-link" th:href="@{/settings}">settings</a>
+                    <li class="nav-item dropdown" sec:authorize="hasAuthority('Admin')">
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button">settings</a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" th:href="@{/settings#nav-general}">
+                                    General
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" th:href="@{/settings#nav-countries}">
+                                    Countries
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" th:href="@{/settings#nav-states}">
+                                    States
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" th:href="@{/settings#nav-mailServer}">
+                                    Mail Server
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" th:href="@{/settings#nav-mailTemplates}">
+                                    Mail Templates
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" th:href="@{/settings#nav-payment}">
+                                    Payment
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button">

@@ -17,7 +17,7 @@
             <div class="col text-center">
                 <label class="form-label badge text-bg-primary fs-6">Extra image #[[${itemStatus.index + 1}]]</label>
                 <div class="image-container mt-1">
-                    <img id="imgThumbnail" class="img-fluid" th:src="@{${item.productExtraImagePath}}" alt="" />
+                    <img id="imgThumbnail" class="img-fluid" th:src="@{${item.productExtraImagePath}}" th:alt="${item.name}" />
                 </div>
             </div>
         </th:block>

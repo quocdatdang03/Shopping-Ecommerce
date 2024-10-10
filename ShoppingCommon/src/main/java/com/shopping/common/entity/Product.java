@@ -127,4 +127,29 @@ public class Product {
         }
         return false;
     }
+
+
+    // get Discount Price :
+    @Transient
+    public float getDiscountPrice() {
+        float discountPrice;
+        if(this.getDiscountPercent()>0)
+        {
+            discountPrice = this.getPrice() * ((100-this.getDiscountPercent())/100);
+//            // làm tròn 2 số thập phân
+//            return (float) (Math.round(discountPrice * 100.0) / 100.0);
+            return discountPrice;
+        }
+        else {
+            return this.getPrice();
+        }
+    }
+
+    // get short name:
+    @Transient
+    public String getShortName() {
+        if(name.length()>50)
+            return name.substring(0,50).concat("...");
+        return name;
+    }
 }

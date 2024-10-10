@@ -44,6 +44,7 @@ public class Category {
     private Category parent;
 
     @OneToMany(mappedBy = "parent")
+    @OrderBy("name asc ") // sorting by name in ascending order
     private Set<Category> children = new HashSet<>();
 
     // constructors :

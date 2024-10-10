@@ -28,7 +28,7 @@
                     </div>
                 </div>
                 <div class="image-container mt-1 mb-2">
-                    <img th:id="${'extraImgThumbnail'+itemStatus.index}" class="img-fluid" th:src="@{${item.productExtraImagePath}}" alt="" style="cursor: pointer;"/>
+                    <img th:id="${'extraImgThumbnail'+itemStatus.index}" class="img-fluid" th:src="@{${item.productExtraImagePath}}" th:alt="${item.name}" style="cursor: pointer;"/>
                 </div>
                 <input name="inputExtraImageFile" th:id="${'inputExtraImageFile'+itemStatus.index}" type="file" class="form-control" accept="image/png, image/jpeg"/>
 

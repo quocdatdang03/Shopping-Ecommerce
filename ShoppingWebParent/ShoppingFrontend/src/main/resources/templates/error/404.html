@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <div th:replace="/fragment/fragments :: html_head('Error page', 'tag')">
+    </div>
+    <style>
+
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div th:replace="/fragment/header :: web_header">
+    </div>
+    <!-- END Header -->
+
+    <div class="min-vh-100 container overflow-hidden">
+        <img style="width:65%;" class="img-fluid d-flex mx-auto" th:src="@{/images/error404.jpg}" alt="404 page not found image"/>
+        <div class="text-center">
+            <h2 style="font-size: 24px;">Something went wrong.</h2>
+            <p>Sorry. We can't find the page you're looking for.</p>
+            <a th:href="@{/}" class="btn btn-primary shadow text-white">
+                Go Back
+            </a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div th:replace="/fragment/footer :: web_footer">
+    </div>
+    <!-- End Footer -->
+</body>
+</html>

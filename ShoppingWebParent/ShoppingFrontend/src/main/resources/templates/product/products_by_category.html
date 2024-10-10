@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+    <head>
+        <div th:replace="/fragment/fragments :: html_head(${pageTitle}, 'tag')">
+        </div>
+        <style>
+            .image-container {
+                width: 100%;
+                padding-top: 100%; /* Tỷ lệ 4:3 (điều chỉnh nếu cần) */
+                max-height : 250px;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .image-container img {
+                position: absolute;
+                top : 0;
+                left:0;
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+                object-position: center;
+                transition: transform 0.3s ease; /* Hiệu ứng khi hover */
+            }
+
+            .image-container img:hover {
+                transform: scale(1.1); /* Phóng to hình ảnh khi di chuột */
+            }
+
+            .product-title {
+                font-size: 16px;
+                display: -webkit-box;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: 2; /* Giới hạn văn bản trong 2 dòng */
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Header -->
+        <div th:replace="/fragment/header :: web_header">
+
+        </div>
+        <!-- End Header -->
+        <div class="container">
+            <!-- Nav bread crumb -->
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+                    <th:block th:each="item : ${categoryParentList}">
+                        <th:block th:if="${item.enabled==true}">
+                            <li th:if="${item.alias != categoryAlias}" class="breadcrumb-item">
+                                <a th:href="@{'/c/'+ ${item.alias}}" th:text="${item.name}"></a>
+                            </li>
+                            <li th:if="${item.alias == categoryAlias}"
+                                class="breadcrumb-item active"
+                                th:text="${item.name}">
+                            </li>
+                        </th:block>
+                    </th:block>
+                </ol>
+            </nav>
+            <!-- End Nav bread crumb -->
+
+            <!-- List Sub Category-->
+            <div th:if="${category.children.size() > 0}">
+                <div class="d-flex align-items-center flex-wrap gap-2">
+                    <th:block th:each="item : ${category.children}">
+                        <div th:if="${item.enabled==true}" class="px-2">
+                            <a class="btn btn-outline-info" th:href="@{'/c/'+${item.alias}}">[[${item.name}]]</a>
+                        </div>
+                    </th:block>
+                </div>
+            </div>
+            <!-- End List Sub Category -->
+
+            <!-- Product List -->
+            <h2 class="mb-3 text-center">Product List</h2>
+            <div class="row row-cols-2 row-cols-md-3 row-cols-xl-4 gx-3 gy-2">
+                <th:block th:each="item : ${productList}">
+                    <div class="col">
+                        <div class="card">
+                            <a class="image-container" th:href="@{'/p/'+${item.alias}}">
+                                <img th:src="@{${item.mainImagePath}}" th:alt="${item.mainImage}">
+                            </a>
+                            <div class="card-body h-100">
+                                <a class="text-decoration-none product-title" th:href="@{'/p/'+${item.alias}}" th:text="${item.name}"></a>
+                                <div class="card-text">
+                                    <p th:if="${item.discountPercent>0}">
+                                        <b style="color: #a3a8ad;">
+                                            <s>
+                                                <span th:replace="fragment/fragments :: product_price(${item.price})"></span>
+                                            </s>
+                                        </b>
+                                        <b class="ps-1">
+                                            <span th:replace="fragment/fragments :: product_price(${item.discountPrice})"></span>
+                                        </b>
+                                    </p>
+                                    <p th:unless="${item.discountPercent>0}">
+                                        <b class="ps-1">
+                                            <span th:replace="fragment/fragments :: product_price(${item.price})"></span>
+                                        </b>
+                                    </p>
+                                </div>
+                                <a href="#" class="btn btn-primary">Add to cart</a>
+                            </div>
+                        </div>
+                    </div>
+                </th:block>
+            </div>
+            <!-- End Product List -->
+
+            <!-- PAGINATION -->
+            <nav th:if="${totalPages>1}" class="mt-5 container-fluid">
+                <ul class="pagination justify-content-center">
+                    <!-- btn first page -->
+                    <li class="page-item" th:classappend="${pageNumber <= 1} ? 'disabled' : ''">
+                        <a th:if="${pageNumber > 1}" class="page-link" th:href="@{'/c/'+${categoryAlias}+'/page/1'}">First Page</a>
+                        <a th:unless="${pageNumber > 1}" class="page-link">First Page</a>
+                    </li>
+                    <!-- End btn first page -->
+
+                    <!-- btn previous -->
+                    <li class="page-item" th:classappend="${pageNumber <= 1} ? 'disabled' : ''">
+                        <a th:if="${pageNumber > 1}" class="page-link" th:href="@{'/c/'+${categoryAlias}+'/page/'+${pageNumber - 1}}">
+                            <span>&laquo;</span>
+                        </a>
+                        <a th:unless="${pageNumber > 1}" class="page-link">
+                            <span>&laquo;</span>
+                        </a>
+                    </li>
+                    <!-- End btn previous -->
+
+                    <!-- page number link -->
+                    <!-- Chỉ hiển thị 5 items : -->
+                    <li th:each="index : ${#numbers.sequence(
+                    pageNumber <= 3 ? 1 : (pageNumber >= totalPages - 2 ? totalPages - 4 : pageNumber - 2),
+                    totalPages >= 5 ? (pageNumber <= 3 ? 5 : (pageNumber >= totalPages - 2 ? totalPages : pageNumber + 2)) : totalPages)}"
+                        class="page-item"
+                        th:classappend="${pageNumber == index} ? 'active' : ''">
+
+                        <a th:if="${pageNumber != index}"
+                           class="page-link"
+                           th:href="@{'/c/'+${categoryAlias}+'/page/'+${index}}">
+                            [[${index}]]
+                        </a>
+
+                        <a th:unless="${pageNumber != index}" class="page-link">[[${index}]]</a>
+                    </li>
+                    <!-- End page number link -->
+
+                    <!-- btn next -->
+                    <li class="page-item" th:classappend="${pageNumber >= totalPages} ? 'disabled' : ''">
+                        <a th:if="${pageNumber < totalPages}" class="page-link" th:href="@{'/c/'+${categoryAlias}+'/page/'+${pageNumber+1}}">
+                            <span>&raquo;</span>
+                        </a>
+                        <a th:unless="${pageNumber < totalPages}" class="page-link">
+                            <span>&raquo;</span>
+                        </a>
+                    </li>
+                    <!-- End btn next -->
+                    <!-- btn last page -->
+                    <li class="page-item" th:classappend="${pageNumber >= totalPages} ? 'disabled' : ''">
+                        <a th:if="${pageNumber < totalPages}" class="page-link" th:href="@{'/c/'+${categoryAlias}+'/page/'+${totalPages}}">Last Page</a>
+                        <a th:unless="${pageNumber < totalPages}" class="page-link">Last Page</a>
+                    </li>
+                    <!-- End btn last page -->
+                </ul>
+            </nav>
+            <div th:if="${totalPages>1}" class="text-center">
+                <p>[[${firstPageNumber}]] - [[${lastPageNumber}]] of [[${totalElements}]] products</p>
+            </div>
+            <!-- END PAGINATION -->
+
+        </div>
+
+
+
+        <!-- Footer -->
+        <div th:replace="/fragment/footer :: web_footer">
+        </div>
+        <!-- End Footer -->
+    </body>
+</html>

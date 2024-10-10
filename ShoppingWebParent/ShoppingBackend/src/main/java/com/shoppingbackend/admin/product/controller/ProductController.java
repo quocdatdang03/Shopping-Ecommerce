@@ -1,11 +1,10 @@
 package com.shoppingbackend.admin.product.controller;
 
 import com.shopping.common.entity.*;
+import com.shopping.common.exception.ProductNotFoundException;
 import com.shoppingbackend.admin.brand.service.BrandService;
 import com.shoppingbackend.admin.brand.service.BrandServiceImpl;
-import com.shoppingbackend.admin.category.exception.CategoryNotFoundException;
 import com.shoppingbackend.admin.category.service.CategoryServiceImpl;
-import com.shoppingbackend.admin.product.exception.ProductNotFoundException;
 import com.shoppingbackend.admin.product.service.ProductServiceImpl;
 import com.shoppingbackend.admin.security.ShoppingUserDetails;
 import com.shoppingbackend.admin.util.FileUploadUtil;

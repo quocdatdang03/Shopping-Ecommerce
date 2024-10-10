@@ -1,22 +1,73 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <!-- meta tag for responsive for mobile phone -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
-    <title>Home - Shopping Web</title>
+   <div th:replace="/fragment/fragments :: html_head('Shopping ', 'tag')">
+   </div>
 
-    <!-- boostrap -->
-    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}">
-    <!-- JQuery -->
-    <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
-    <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+    <style>
+        .custom-navbar {
+            background-color : #7432f9;
+        }
+
+        .custom-navbar .navbar-nav .nav-item .nav-link {
+            color: white;
+        }
+
+        .image-container {
+            width: 100%; /* Đảm bảo container đầy đủ chiều rộng của cột */
+            padding-top: 100%; /* Giữ tỷ lệ 1:1 cho hình ảnh, tương đương với hình vuông */
+            position: relative; /* Đảm bảo phần tử con bên trong được định vị chính xác */
+        }
+
+        .image-container img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            max-width: 100%; /* Điều chỉnh kích thước tối đa */
+            max-height: 200px;
+        }
+
+        .category-item-text {
+            color: #343a40; /* Màu mặc định (tương đương với text-dark) */
+            transition: color 0.3s; /* Thêm hiệu ứng chuyển màu mượt mà */
+        }
+
+        a.category-item:hover .category-item-text {
+            color: #1F86DD;
+        }
+
+    </style>
 </head>
 <body>
-<div class="container-fluid">
-    <div>
-        <h1>Shopping Web Control Panel</h1>
+    <!-- Header -->
+    <div th:replace="/fragment/header :: web_header">
+
     </div>
-</div>
+    <!-- End Header -->
+    <div class="container mt-5">
+        <div>
+            <h2 class="text-center mb-3">Product Categories</h2>
+            <div class="row row-cols-3 row-cols-md-5 row-cols-lg-6 gy-2 gx-lg-2">
+                <th:block th:each="item : ${categoryList}">
+                    <div class="col text-center">
+                        <a class="d-block text-decoration-none category-item" th:href="@{'/c/'+${item.alias}}">
+                            <div class="image-container mb-1">
+                                <img class="img-fluid" th:src="@{${item.imagePath}}" th:alt="${item.name}"/>
+                            </div>
+                            <p class="text-uppercase fw-semibold fs-6 category-item-text" th:text="${item.name}"></p>
+                        </a>
+                    </div>
+                </th:block>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div th:replace="/fragment/footer :: web_footer">
+    </div>
+    <!-- End Footer -->
 </body>
 </html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="content_states" th:remove="tag">
+    <div class="alert alert-info" style="border-left: 5px solid #9febf8; border-radius: 1px;">
+        Manage states which will be displayed in customer registration form, shipping address,...
+        <br/>
+        Click load Country List first.
+    </div>
+    <div class="d-none alert alert-info alert-dismissible fade d-inline-block" role="alert" id="toastMessageForStates">
+        <i class="fa-solid fa-circle-info"></i>
+        <span id="toastMessageTextForStates"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div class="my-3">
+        <button class="btn btn-primary" id="btnLoadCountryListForStates">Load Country List</button>
+    </div>
+    <div class="my-3">
+        <label class="form-label">Selected Country: </label>
+        <select class="form-select" id="dropDownListCountryForStates">
+
+        </select>
+    </div>
+    <div class="my-3">
+        <label class="form-label">All States: </label>
+        <select class="form-select" style="min-height : 300px;" id="dropDownListState" size="3">
+
+        </select>
+    </div>
+    <div class="row mt-4">
+        <div class="col-8">
+            <label class="form-label" id="labelStateName">State Name: </label>
+            <div class="">
+                <input type="text" class="form-control" id="inputStateName"/>
+            </div>
+        </div>
+        <div class="col-4 align-self-end mt-3 mt-lg-0">
+            <button class="btn btn-success mx-1" id="btnAddState">Add</button>
+            <button class="btn btn-secondary mx-1" id="btnUpdateState" disabled>Update</button>
+            <button class="btn btn-danger mx-1" id="btnDeleteState" disabled>Delete</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

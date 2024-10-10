@@ -60,7 +60,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/users/**").hasAuthority("Admin")
+                .antMatchers("/users/**", "/settings/**", "/countries/**", "/states/**").hasAuthority("Admin")
                 .antMatchers("/categories/**").hasAnyAuthority("Admin", "Editor")
                 // --------- Start authorize for url /products :
                 // Role Admin, Editor, Salespeson, Shipper can view product list and detail
