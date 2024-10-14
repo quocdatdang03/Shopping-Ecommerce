@@ -3,7 +3,7 @@ package com.shopping.common.entity;
 public enum SettingCategory {
     GENERAL,
     MAIL_SERVER,
-    MAIL_TEMPLATES,
+    MAIL_TEMPLATE,
     CURRENCY,
     PAYMENT
 }

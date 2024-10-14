@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="content_mailTemplate" th:remove="tag">
+    <div th:if="${message!=null}" class="alert alert-success alert-dismissible fade show d-inline-block" role="alert" >
+        <i class="fa-solid fa-circle-check"></i>
+        [[${message}]]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <form th:action="@{/settings/saveMailTemplateSetting}" method="post">
+        <nav>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#nav-customerVerification" type="button" role="tab">Customer Verification</button>
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#nav-orderConfirmation" type="button" role="tab">Order Confirmation</button>
+            </div>
+        </nav>
+        <div class="tab-content mt-3" id="nav-tabContent">
+            <div class="tab-pane fade show active p-3" id="nav-customerVerification" role="tabpanel">
+                <div th:replace="setting/fragment/setting_mailTemplate_customerVerification :: content_customerVerification">
+                </div>
+            </div>
+            <div class="tab-pane fade p-3" id="nav-orderConfirmation" role="tabpanel">
+                <h1>Order confirmation</h1>
+            </div>
+        </div>
+
+        <div class="row mt-5 justify-content-center">
+            <div class="col col-sm-3">
+                <input type="submit" class="btn btn-primary p-2" style="width: 100%;" value="Save">
+            </div>
+            <div class="col col-sm-3">
+                <a th:href="@{/}" class="btn btn-secondary p-2" style="width: 100%;">Cancel</a>
+            </div>
+        </div>
+    </form>
+
+</div>
+</body>
+</html>

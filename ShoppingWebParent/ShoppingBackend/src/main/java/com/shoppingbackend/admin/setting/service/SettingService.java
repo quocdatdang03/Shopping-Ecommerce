@@ -10,5 +10,7 @@ public interface SettingService {
     public List<Setting> listAllSettings();
     public List<Currency> listAllCurrency();
     public GeneralSettingUtils getGeneralSettingUtils();
+    public List<Setting> listMailServerSetting();
+    public List<Setting> listMailTemplateSettings();
     public void saveAll(List<Setting> settingList);
 }

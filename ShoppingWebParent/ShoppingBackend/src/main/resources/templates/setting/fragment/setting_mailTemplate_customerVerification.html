@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="content_customerVerification" th:remove="tag">
+    <div class="mb-3">
+        <label for="emailSubject" class="form-label">E-mail Subject</label>
+        <input name="CUSTOMER_VERIRY_SUBJECT" th:value="${CUSTOMER_VERIRY_SUBJECT}" type="text" class="form-control" id="emailSubject" required>
+    </div>
+    <div class="mb-3">
+        <label for="emailContent" class="form-label">E-mail Content</label>
+        <textarea name="CUSTOMER_VERIRY_CONTENT" class="form-control" id="emailContent" rows="3" required>
+            [[${CUSTOMER_VERIRY_CONTENT}]]
+        </textarea>
+    </div>
+</div>
+</body>
+</html>

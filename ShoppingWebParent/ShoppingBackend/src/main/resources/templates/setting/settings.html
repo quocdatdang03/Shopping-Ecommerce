@@ -62,10 +62,12 @@
                 </div>
             </div>
             <div class="tab-pane fade p-3" id="nav-mailServer" role="tabpanel">
-
+                <div th:replace="setting/fragment/setting_mailServer :: content_mailServer">
+                </div>
             </div>
             <div class="tab-pane fade p-3" id="nav-mailTemplates" role="tabpanel">
-
+                <div th:replace="setting/fragment/setting_mailTemplate :: content_mailTemplate">
+                </div>
             </div>
             <div class="tab-pane fade p-3" id="nav-payment" role="tabpanel">
 
@@ -122,6 +124,7 @@
 
 <script type="text/javascript" th:src="@{/js/setting_countries.js}"></script>
 <script type="text/javascript" th:src="@{/js/setting_states.js}"></script>
+<script type="text/javascript" th:src="@{/js/setting_mailTemplates.js}"></script>
 
 </body>
 </html>

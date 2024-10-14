@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <div th:replace="/fragment/fragments :: html_head(${pageTitle}, 'tag')">
+    </div>
+</head>
+<body>
+<!-- Header -->
+<div th:replace="/fragment/header :: web_header">
+</div>
+<!-- End Header -->
+
+<div class="container mt-5">
+    <div class="text-center">
+        <h2>Customer Registration</h2>
+        <h3>You account has been verified!</h3>
+        <a th:href="@{/login}" class="btn btn-primary">
+            Login here
+        </a>
+    </div>
+</div>
+
+<!-- Footer -->
+<div th:replace="/fragment/footer :: web_footer">
+</div>
+<!-- End Footer -->
+
+<!-- Bao gồm jQuery trước các script của bạn -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script type="text/javascript">
+</script>
+</body>
+</html>

@@ -29,6 +29,12 @@
     </properties>
     <dependencies>
         <!-- Module ShoppingBackend will inherit dependencies from ShoppingWebParent-->
+
+        <!-- Spring Stater Mail : include javax.mail and spring-context-support (JavaMailSender, JavaMailSenderImpl,...) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

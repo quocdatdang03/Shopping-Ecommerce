@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <div th:replace="/fragment/fragments :: html_head(${pageTitle}, 'tag')">
+    </div>
+</head>
+<body>
+<!-- Header -->
+<div th:replace="/fragment/header :: web_header">
+</div>
+<!-- End Header -->
+
+<div class="container mt-5">
+    <h2 class="text-center">SignUp</h2>
+    <form class="border rounded-1 mx-auto p-3"
+          style="max-width: 600px;"
+          id="formRegister"
+          th:action="@{/register}"
+          method="POST"
+          th:object="${customer}">
+        <!-- Thêm CSRF token -->
+        <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+
+        <div class="mb-3 row row-cols-2">
+            <div class="col">
+                <label class="form-label" for="firstNameInput">First Name</label>
+                <input type="text" class="form-control" th:field="*{firstName}" id="firstNameInput" />
+            </div>
+            <div class="col">
+                <label class="form-label" for="lastNameInput">Last Name</label>
+                <input type="text" class="form-control" th:field="*{lastName}" id="lastNameInput" />
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="emailInput">Email</label>
+            <input type="email" class="form-control" th:field="*{email}" id="emailInput" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="passwordInput">Password</label>
+            <input type="password" class="form-control" th:field="*{password}" id="passwordInput" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="confirmPasswordInput">Confirm Password</label>
+            <input type="password" class="form-control" id="confirmPasswordInput" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="phoneNumberInput">Phone Number</label>
+            <input type="text" class="form-control" th:field="*{phoneNumber}" id="phoneNumberInput" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="addressLine1Input">Address Line 1</label>
+            <input type="text" class="form-control" th:field="*{addressLine1}" id="addressLine1Input" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="addressLine2Input">Address Line 2</label>
+            <input type="text" class="form-control" th:field="*{addressLine2}" id="addressLine2Input" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="cityInput">City</label>
+            <input type="text" class="form-control" th:field="*{city}" id="cityInput" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="countryDropDownList">Country</label>
+            <select class="form-select" id="countryDropDownList" th:field="*{country}">
+                <th:block th:each="item : ${countryList}">
+                    <option th:value="${item.id}" th:text="${item.name}"></option>
+                </th:block>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="stateInput">State/Province</label>
+            <input type="text" class="form-control" th:field="*{state}" id="stateInput" list="dataListState"/>
+            <datalist id="dataListState"></datalist>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="postalCodeInput">Postal Code</label>
+            <input type="text" class="form-control" th:field="*{postalCode}" id="postalCodeInput" />
+        </div>
+
+        <div>
+            <input class="btn btn-primary w-100" type="submit" value="Signup"/>
+        </div>
+    </form>
+</div>
+
+<!-- Footer -->
+<div th:replace="/fragment/footer :: web_footer">
+</div>
+<!-- End Footer -->
+
+<!-- Bao gồm jQuery trước các script của bạn -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script type="text/javascript">
+    var contextPath = "[[@{/}]]";
+    var contextPathSetting = "[[@{/settings/}]]";
+    var countryDropDownList;
+    var stateInput;
+    var dataListState;
+
+    $(document).ready(function() {
+        countryDropDownList = $('#countryDropDownList');
+        stateInput = $('#stateInput');
+        dataListState = $('#dataListState');
+
+        countryDropDownList.on('change', function() {
+            stateInput.val("");
+            stateInput.focus();
+
+            var countryId = countryDropDownList.val();
+            handleFillDataForDataListState(countryId);
+        });
+
+        // Kiểm tra tính duy nhất của email khi rời khỏi trường
+        $('#emailInput').on('blur', async function() {
+            const emailInput = $(this);
+            const email = emailInput.val().trim();
+
+            if(email !== "") {
+                await checkEmailUnique();
+            }
+        });
+
+        // Xử lý submit form
+        $('#formRegister').on('submit', async function(event) {
+            event.preventDefault(); // Ngăn chặn việc gửi form mặc định
+
+            // Thực hiện kiểm tra các trường
+            const isFormValid = await validateForm();
+
+            if(isFormValid) {
+                // Gửi form nếu mọi thứ hợp lệ
+                $('#formRegister')[0].submit();
+            }
+        });
+    });
+
+
+    function handleFillDataForDataListState(countryId) {
+        const requestURL = contextPathSetting + "list_states_by_country/" + countryId;
+
+        // Sử dụng Ajax call method GET:
+        $.get(requestURL, function(responseStateList) {
+            // Trước khi thêm state vào dataListState -> clear content của dataListState trước
+            dataListState.empty();
+
+            $.each(responseStateList, function (index, item) {
+                let stateName = item.name;
+                $("<option>").val(stateName).text(stateName).appendTo(dataListState);
+            });
+        }).fail(function(error) {
+            console.log("Failed to load states:", error);
+        });
+    }
+
+    // Validate Form:
+    async function validateForm() {
+        var isFormValid = true;
+
+        if(!validateFirstName()) {
+            isFormValid = false;
+        }
+
+        if(!validateLastName()) {
+            isFormValid = false;
+        }
+
+        if(!validateEmail()) {
+            isFormValid = false;
+        }
+
+        if(!validatePassword()) {
+            isFormValid = false;
+        }
+
+        if(!validateConfirmPassword()) {
+            isFormValid = false;
+        }
+        if(!validateAddressLine1()) {
+            isFormValid = false;
+        }
+
+        if(!validateCity()) {
+            isFormValid = false;
+        }
+
+        if(!validatePhoneNumber()) {
+            isFormValid = false;
+        }
+
+        if(!validateState()) {
+            isFormValid = false;
+        }
+
+        if(!validatePostalCode()) {
+            isFormValid = false;
+        }
+
+        // check unique nếu các kiểm tra trên đều hợp lệ
+        if(isFormValid) {
+            const isEmailUnique = await checkEmailUnique();
+            if(!isEmailUnique) {
+                isFormValid = false;
+            }
+        }
+
+        return isFormValid;
+    }
+
+    // Check unique email:
+    function checkEmailUnique() {
+        return new Promise(((resolve, reject) => {
+            const requestURL = contextPath + "customers/check_unique_email";
+            const emailInput = $('#emailInput');
+            // Xóa thông báo lỗi trước đó
+            emailInput.removeClass("is-invalid");
+            emailInput.next(".invalid-feedback").remove();
+
+            // Tạo object params chứa các param cần gửi đến server:
+            var params = {
+                email: emailInput.val(),
+                // Vì đang sử dụng Spring Security nên khi gửi request POST từ Form đến Server bắt buộc phải có param _csrf
+                // nếu không sẽ xảy ra error 403 Forbidden
+                _csrf: $('input[name="_csrf"]').val()
+            };
+
+            // Sử dụng ajax để gửi request (Post) đến Server mà không cần reload web
+            $.post(requestURL, params, function (response) {
+                // response được trả về từ Server (UserRestController):
+                if(response === 'Duplicated') {
+                    emailInput.addClass("is-invalid");
+                    emailInput.after('<div class="invalid-feedback">This email is already in use. Try with a different email.</div>');
+                    resolve(false);
+                }
+                else if(response === 'Ok') {
+                    resolve(true);
+                }
+            }).fail(function (error) {
+                console.log("Fail:", error);
+                    resolve(false);
+            });
+        }))
+
+    }
+
+    function validatePassword() {
+        const passwordInput = $('#passwordInput');
+        const passwordInputValue= passwordInput.val();
+
+        if(checkInputEmpty(passwordInput, passwordInputValue, "Password"))
+            return true;
+        return false;
+    }
+
+    function validateConfirmPassword() {
+        const confirmPasswordInput = $("#confirmPasswordInput");
+        const confirmPasswordInputValue= confirmPasswordInput.val();
+        const passwordInputValue= $('#passwordInput').val();
+
+        if(checkInputEmpty(confirmPasswordInput, confirmPasswordInputValue, "Confirm Password")){
+            if(checkPasswordMatching(passwordInputValue))
+                return true;
+        }
+        return false;
+    }
+
+    function checkPasswordMatching(password) {
+        const confirmPasswordInput = $("#confirmPasswordInput");
+        // Xóa thông báo lỗi trước đó
+        confirmPasswordInput.removeClass("is-invalid");
+        confirmPasswordInput.next(".invalid-feedback").remove();
+
+        if(password !== "") {
+            if(confirmPasswordInput.val() !== password) {
+                confirmPasswordInput.addClass("is-invalid")
+                confirmPasswordInput.after('<div class="invalid-feedback">Password and Confirm Password do not match.</div>');
+                return false;
+            }
+        }
+        return true;
+    }
+
+    function validateEmail() {
+        const emailInput = $('#emailInput');
+        const emailInputValue = emailInput.val();
+
+        if(checkInputEmpty(emailInput, emailInputValue, "Email"))
+            return true;
+        return false;
+    }
+
+    function validateFirstName() {
+        const firstNameInput = $('#firstNameInput');
+        const firstNameInputValue = firstNameInput.val();
+
+        if(checkInputEmpty(firstNameInput, firstNameInputValue, "First Name"))
+            return true;
+        return false;
+    }
+
+    function validateLastName() {
+        const lastNameInput = $('#lastNameInput');
+        const lastNameInputValue = lastNameInput.val();
+
+        if(checkInputEmpty(lastNameInput, lastNameInputValue, "Last Name"))
+            return true;
+        return false;
+    }
+
+    function validateAddressLine1() {
+        const addressLine1Input = $('#addressLine1Input');
+        const addressLine1InputValue = addressLine1Input.val();
+
+        if(checkInputEmpty(addressLine1Input, addressLine1InputValue, "Address"))
+            return true;
+        return false;
+    }
+
+    function validateCity() {
+        const cityInput = $('#cityInput');
+        const cityInputValue = cityInput.val();
+
+        if(checkInputEmpty(cityInput, cityInputValue, "City"))
+            return true;
+        return false;
+    }
+
+    function validatePhoneNumber() {
+        const phoneNumberInput = $('#phoneNumberInput');
+        const phoneNumberInputValue = phoneNumberInput.val();
+
+        if(checkInputEmpty(phoneNumberInput, phoneNumberInputValue, "Phone Number"))
+            return true;
+        return false;
+    }
+
+    function validateState() {
+        const stateInput = $('#stateInput');
+        const stateInputValue = stateInput.val();
+
+        if(checkInputEmpty(stateInput, stateInputValue, "State"))
+            return true;
+        return false;
+    }
+
+    function validatePostalCode() {
+        const postalCodeInput = $('#postalCodeInput');
+        const postalCodeInputValue = postalCodeInput.val();
+
+        if(checkInputEmpty(postalCodeInput, postalCodeInputValue, "Postal Code"))
+            return true;
+        return false;
+    }
+
+    function checkInputEmpty(inputField, inputValue, inputName) {
+        // Xóa thông báo lỗi trước đó
+        inputField.removeClass("is-invalid");
+        inputField.next(".invalid-feedback").remove();
+
+        if(inputValue.trim() === "") {
+            inputField.addClass("is-invalid");
+            inputField.after('<div class="invalid-feedback">'+inputName+' must not be empty.</div>');
+            return false;
+        }
+        return true;
+    }
+</script>
+</body>
+</html>

@@ -25,11 +25,14 @@
         <div class="row row-cols-1 row-cols-sm-2">
             <div class="col mb-3">
                 <label for="name" class="form-label">Name</label>
-                <input th:field="*{name}" type="text" class="form-control" id="name" required>
+<!--                <input th:field="*{name}" type="text" class="form-control" id="name">-->
+                <input th:field="*{name}" type="text" id="name" class="form-control" th:classappend="${#fields.hasErrors('name') ? 'is-invalid' : ''}">
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
             </div>
             <div class="col mb-3">
                 <label for="alias" class="form-label">Alias</label>
-                <input th:field="*{alias}" type="text" class="form-control" id="alias" required>
+                <input th:field="*{alias}" type="text" id="alias" class="form-control" th:classappend="${#fields.hasErrors('alias') ? 'is-invalid' : ''}">
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('alias')}" th:errors="*{alias}"></div>
             </div>
         </div>
         <div class="mb-3">

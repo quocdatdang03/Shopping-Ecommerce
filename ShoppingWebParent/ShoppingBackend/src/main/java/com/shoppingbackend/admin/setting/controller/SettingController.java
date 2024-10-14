@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
+@RequestMapping("/settings")
 public class SettingController {
 
     @Autowired
@@ -30,7 +32,7 @@ public class SettingController {
     @Autowired
     private CurrencyRepository currencyRepository;
 
-    @GetMapping("/settings")
+    @GetMapping("")
     public String showSettings(Model model) {
         List<Setting> settingList = settingService.listAllSettings();
         List<Currency> currencyList = settingService.listAllCurrency();
@@ -45,7 +47,7 @@ public class SettingController {
         return "setting/settings";
     }
 
-    @PostMapping("/settings/saveGeneralSetting")
+    @PostMapping("/saveGeneralSetting")
     public String saveGeneralSetting(
             @RequestParam(name="inputFileImage") MultipartFile multipartFile,
             HttpServletRequest request,
@@ -60,6 +62,24 @@ public class SettingController {
 
 
         redirectAttributes.addFlashAttribute("message", "General Settings have been saved successfully!");
+        return "redirect:/settings";
+    }
+
+    @PostMapping("/saveMailServerSetting")
+    public String saveMailServerSetting(HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        List<Setting> mailServerSettingList = settingService.listMailServerSetting();
+        updateSettingValuesFromForm(request, mailServerSettingList);
+
+        redirectAttributes.addFlashAttribute("message", "Mail Server Settings have been saved successfully!");
+        return "redirect:/settings";
+    }
+
+    @PostMapping("/saveMailTemplateSetting")
+    public String saveMailTemplateSetting(HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        List<Setting> mailTemplateSetting = settingService.listMailTemplateSettings();
+        updateSettingValuesFromForm(request, mailTemplateSetting);
+
+        redirectAttributes.addFlashAttribute("message", "Mail Template Settings have been saved successfully!");
         return "redirect:/settings";
     }
 
@@ -90,15 +110,15 @@ public class SettingController {
         }
     }
 
-    private void updateSettingValuesFromForm(HttpServletRequest request,  List<Setting> generalSettings) {
-        for(Setting generalSetting : generalSettings) {
+    private void updateSettingValuesFromForm(HttpServletRequest request,  List<Setting> listSetting) {
+        for(Setting setting : listSetting) {
             // set rest value from Form:
-            String value = request.getParameter(generalSetting.getKey());
+            String value = request.getParameter(setting.getKey());
             if(value!=null)
-                generalSetting.setValue(value);
+                setting.setValue(value);
         }
         // save all changes to Database :
-        settingService.saveAll(generalSettings);
+        settingService.saveAll(listSetting);
     }
 
 }

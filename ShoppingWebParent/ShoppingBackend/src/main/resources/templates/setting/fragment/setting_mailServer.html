@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="content_mailServer" th:remove="tag">
+    <div th:if="${message!=null}" class="alert alert-success alert-dismissible fade show d-inline-block" role="alert" >
+        <i class="fa-solid fa-circle-check"></i>
+        [[${message}]]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <form th:action="@{/settings/saveMailServerSetting}" method="post">
+        <div class="mb-3 row row-cols-1 row-cols-sm-2 gy-3 gy-sm-0">
+            <div class="col">
+                <label for="mailHost" class="form-label">SMTP Server Host Name</label>
+                <input name="MAIL_HOST" th:value="${MAIL_HOST}" type="text" class="form-control" id="mailHost" required>
+            </div>
+
+            <div class="col">
+                <label for="mailPort" class="form-label">Port Number</label>
+                <input name="MAIL_PORT" th:value="${MAIL_PORT}" type="text" class="form-control" id="mailPort" required>
+            </div>
+        </div>
+        <div class="mb-3 row row-cols-1 row-cols-sm-2 gy-3 gy-sm-0">
+            <div class="col">
+                <label for="mailUserName" class="form-label">Username</label>
+                <input name="MAIL_USERNAME" th:value="${MAIL_USERNAME}" type="text" class="form-control" id="mailUserName" required>
+            </div>
+
+            <div class="col">
+                <label for="mailPassword" class="form-label">Password</label>
+                <input name="MAIL_PASSWORD" th:value="${MAIL_PASSWORD}" type="text" class="form-control" id="mailPassword" required>
+            </div>
+        </div>
+
+        <div class="mb-3 row row-cols-1 row-cols-sm-2 gy-3 gy-sm-0">
+            <div class="col">
+                <label for="mailFrom" class="form-label">From E-mail Address</label>
+                <input name="MAIL_FROM" th:value="${MAIL_FROM}" type="text" class="form-control" id="mailFrom" required>
+            </div>
+
+            <div class="col">
+                <label for="mailSenderName" class="form-label">Sender Name</label>
+                <input name="MAIL_SENDER_NAME" th:value="${MAIL_SENDER_NAME}" type="text" class="form-control" id="mailSenderName" required>
+            </div>
+        </div>
+
+        <div class="mb-3 row row-cols-1 row-cols-sm-2 gy-3 gy-sm-0">
+            <div class="col">
+                <label for="mailAuth" class="form-label">Server Authentication Required</label>
+                <select class="form-select" name="MAIL_AUTH" id="mailAuth">
+                    <option th:selected="(${MAIL_AUTH}=='true')" value="true">true</option>
+                    <option th:selected="(${MAIL_AUTH}=='false')" value="false">false</option>
+                </select>
+            </div>
+
+            <div class="col">
+                <label for="mailSecured" class="form-label">Server Requires Secured Connection (TLS): </label>
+                <select class="form-select" name="MAIL_SECURED" id="mailSecured">
+                    <option th:selected="(${MAIL_SECURED}=='true')" value="true">true</option>
+                    <option th:selected="(${MAIL_SECURED}=='false')" value="false">false</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row mt-5 justify-content-center">
+            <div class="col col-sm-3">
+                <input type="submit" class="btn btn-primary p-2" style="width: 100%;" value="Save">
+            </div>
+            <div class="col col-sm-3">
+                <a th:href="@{/}" class="btn btn-secondary p-2" style="width: 100%;">Cancel</a>
+            </div>
+        </div>
+    </form>
+
+</div>
+</body>
+</html>

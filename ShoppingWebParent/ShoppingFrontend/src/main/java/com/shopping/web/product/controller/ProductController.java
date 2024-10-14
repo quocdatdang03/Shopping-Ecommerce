@@ -8,6 +8,7 @@ import com.shopping.web.category.service.CategoryServiceImpl;
 import com.shopping.web.product.service.ProductServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,13 +28,15 @@ public class ProductController {
     @GetMapping("/c/{category_alias}")
     public String viewProductByCategoryFirstPage(@PathVariable("category_alias") String categoryAlias, Model model) {
         Integer pageNumber = 1;
-        return viewProductByCategoryByPage(categoryAlias, pageNumber, model);
+        String keyword = null;
+        return viewProductByCategoryByPage(categoryAlias, pageNumber, keyword, model);
     }
 
     @GetMapping("/c/{category_alias}/page/{pageNumber}")
     public String viewProductByCategoryByPage(
             @PathVariable("category_alias") String categoryAlias,
             @PathVariable("pageNumber") Integer pageNumber,
+            @Param("keyword") String keyword,
             Model model) {
         try {
             Category category = categoryService.getCategoryByAlias(categoryAlias);
@@ -42,7 +45,7 @@ public class ProductController {
 
             List<Category> categoryParentList = categoryService.listCategoryParents(category);
 
-            Page<Product> pageResult = productService.listProductByCategory(pageNumber, category);
+            Page<Product> pageResult = productService.listProductByCategory(pageNumber, category, keyword);
             List<Product> productList = pageResult.getContent();
             int totalPages = pageResult.getTotalPages();
             long totalElements = pageResult.getTotalElements();
@@ -66,6 +69,8 @@ public class ProductController {
             model.addAttribute("firstPageNumber", firstPageNumber);
             model.addAttribute("lastPageNumber", lastPageNumber);
             model.addAttribute("pageNumber", pageNumber);
+
+            model.addAttribute("keyword", keyword);
 
             model.addAttribute("pageTitle", category.getName());
 

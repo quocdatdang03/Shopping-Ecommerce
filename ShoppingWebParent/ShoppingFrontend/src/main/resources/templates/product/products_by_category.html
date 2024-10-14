@@ -77,6 +77,15 @@
 
             <!-- Product List -->
             <h2 class="mb-3 text-center">Product List</h2>
+            <div class="mb-4 mt-2 w-full d-flex align-items-center justify-content-end">
+                <form th:action="@{'/c/'+${categoryAlias}+'/page/1'}" method="get" class="d-flex align-items-center" role="search">
+                    <input type="search" class="form-control me-2" id="searchInput" name="keyword" th:value="${keyword!=null ? keyword : ''}" placeholder="Enter keyword to search..."/>
+                    <button class="btn btn-outline-success" type="submit">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </form>
+                <button type="button" class="btn btn-secondary ms-1" onclick="handleSeeAllProducts()">See All</button>
+            </div>
             <div class="row row-cols-2 row-cols-md-3 row-cols-xl-4 gx-3 gy-2">
                 <th:block th:each="item : ${productList}">
                     <div class="col">
@@ -116,14 +125,14 @@
                 <ul class="pagination justify-content-center">
                     <!-- btn first page -->
                     <li class="page-item" th:classappend="${pageNumber <= 1} ? 'disabled' : ''">
-                        <a th:if="${pageNumber > 1}" class="page-link" th:href="@{'/c/'+${categoryAlias}+'/page/1'}">First Page</a>
+                        <a th:if="${pageNumber > 1}" class="page-link" th:href="@{'/c/'+${categoryAlias}+'/page/1'+${keyword!=null ? '?keyword='+keyword : ''}}">First Page</a>
                         <a th:unless="${pageNumber > 1}" class="page-link">First Page</a>
                     </li>
                     <!-- End btn first page -->
 
                     <!-- btn previous -->
                     <li class="page-item" th:classappend="${pageNumber <= 1} ? 'disabled' : ''">
-                        <a th:if="${pageNumber > 1}" class="page-link" th:href="@{'/c/'+${categoryAlias}+'/page/'+${pageNumber - 1}}">
+                        <a th:if="${pageNumber > 1}" class="page-link" th:href="@{'/c/'+${categoryAlias}+'/page/'+${pageNumber - 1} + ${keyword!=null ? '?keyword='+keyword : ''}}">
                             <span>&laquo;</span>
                         </a>
                         <a th:unless="${pageNumber > 1}" class="page-link">
@@ -135,14 +144,14 @@
                     <!-- page number link -->
                     <!-- Chỉ hiển thị 5 items : -->
                     <li th:each="index : ${#numbers.sequence(
-                    pageNumber <= 3 ? 1 : (pageNumber >= totalPages - 2 ? totalPages - 4 : pageNumber - 2),
+                    pageNumber <= 3 ? 1 : (pageNumber >= totalPages - 2 ? ((totalPages - 4 <= 0) ? 1 : totalPages - 4) : pageNumber - 2),
                     totalPages >= 5 ? (pageNumber <= 3 ? 5 : (pageNumber >= totalPages - 2 ? totalPages : pageNumber + 2)) : totalPages)}"
                         class="page-item"
                         th:classappend="${pageNumber == index} ? 'active' : ''">
 
                         <a th:if="${pageNumber != index}"
                            class="page-link"
-                           th:href="@{'/c/'+${categoryAlias}+'/page/'+${index}}">
+                           th:href="@{'/c/'+${categoryAlias}+'/page/'+${index} + ${keyword!=null ? '?keyword='+keyword : ''}}">
                             [[${index}]]
                         </a>
 
@@ -152,7 +161,7 @@
 
                     <!-- btn next -->
                     <li class="page-item" th:classappend="${pageNumber >= totalPages} ? 'disabled' : ''">
-                        <a th:if="${pageNumber < totalPages}" class="page-link" th:href="@{'/c/'+${categoryAlias}+'/page/'+${pageNumber+1}}">
+                        <a th:if="${pageNumber < totalPages}" class="page-link" th:href="@{'/c/'+${categoryAlias}+'/page/'+${pageNumber+1} + ${keyword!=null ? '?keyword='+keyword : ''}}">
                             <span>&raquo;</span>
                         </a>
                         <a th:unless="${pageNumber < totalPages}" class="page-link">
@@ -162,7 +171,7 @@
                     <!-- End btn next -->
                     <!-- btn last page -->
                     <li class="page-item" th:classappend="${pageNumber >= totalPages} ? 'disabled' : ''">
-                        <a th:if="${pageNumber < totalPages}" class="page-link" th:href="@{'/c/'+${categoryAlias}+'/page/'+${totalPages}}">Last Page</a>
+                        <a th:if="${pageNumber < totalPages}" class="page-link" th:href="@{'/c/'+${categoryAlias}+'/page/'+${totalPages} + ${keyword!=null ? '?keyword='+keyword : ''}}">Last Page</a>
                         <a th:unless="${pageNumber < totalPages}" class="page-link">Last Page</a>
                     </li>
                     <!-- End btn last page -->
@@ -181,5 +190,11 @@
         <div th:replace="/fragment/footer :: web_footer">
         </div>
         <!-- End Footer -->
+
+    <script type="text/javascript">
+        function handleSeeAllProducts() {
+            window.location = "[[@{/c/}]]"+"[[${categoryAlias}]]";
+        }
+    </script>
     </body>
 </html>

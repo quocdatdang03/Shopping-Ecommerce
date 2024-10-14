@@ -7,6 +7,6 @@ import org.springframework.data.domain.Page;
 
 
 public interface ProductService {
-    public Page<Product> listProductByCategory(Integer pageNumber, Category category);
+    public Page<Product> listProductByCategory(Integer pageNumber, Category category, String keyword);
     public Product getProductByAlias(String alias) throws ProductNotFoundException;
 }

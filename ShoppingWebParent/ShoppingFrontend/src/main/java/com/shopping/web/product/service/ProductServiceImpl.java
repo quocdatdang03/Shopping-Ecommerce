@@ -15,13 +15,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProductServiceImpl implements ProductService{
 
-    public static final Integer NUMBER_PRODUCT_PER_PAGE = 10;
+    public static final Integer NUMBER_PRODUCT_PER_PAGE = 12;
 
     @Autowired
     private ProductRepository productRepository;
 
     @Override
-    public Page<Product> listProductByCategory(Integer pageNumber, Category category) {
+    public Page<Product> listProductByCategory(Integer pageNumber, Category category, String keyword) {
         // sort products by name in ascending order:
         Sort sort = Sort.by("name").ascending();
 
@@ -30,7 +30,10 @@ public class ProductServiceImpl implements ProductService{
 
         Pageable pageable = PageRequest.of(pageNumber-1, NUMBER_PRODUCT_PER_PAGE, sort);
 
-        return productRepository.listProductByCategory(categoryId, allParentCategoryId, pageable);
+        if(keyword!=null && !keyword.isBlank())
+            return productRepository.searchProductWithKeyword(categoryId, allParentCategoryId, keyword, pageable);
+        else
+            return productRepository.listProductByCategory(categoryId, allParentCategoryId, pageable);
     }
 
     @Override

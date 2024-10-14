@@ -4,8 +4,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,12 +24,15 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Size(min=3, max=128, message = "Name must be between 3 and 128 characters!")
     @Column(name = "name", length = 128, nullable = false, unique = true)
     private String name;
 
+    @Size(min=3, max=128, message = "Alias must be between 3 and 128 characters!")
     @Column(name = "alias", length = 64, nullable = false, unique = true)
     private String alias;
 
+    //@NotBlank(message = "Image is required!")
     @Column(name = "image", length = 128, nullable = false)
     private String image;
 
