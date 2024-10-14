@@ -93,6 +93,14 @@ public class ProductServiceImpl implements ProductService {
             product.setAlias(product.getAlias().trim().replaceAll(" ", "-"));
         }
 
+        // In case edit :  retain the first value of createdTime
+        if(product.getId()!=null)
+        {
+            Product existedProductInDB = productRepository.findById(product.getId()).get();
+            product.setCreatedTime(existedProductInDB.getCreatedTime());
+        }
+
+
         // Create or Edit always set updatedTime :
         product.setUpdatedTime(new Date()); // set updated time is current date
 

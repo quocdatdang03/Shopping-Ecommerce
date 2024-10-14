@@ -143,19 +143,24 @@ public class ProductController {
             @AuthenticationPrincipal ShoppingUserDetails shoppingUserDetails,
             RedirectAttributes redirectAttributes) throws IOException, ProductNotFoundException {
 
+        // Nếu mà user không có role Admin hay Editor và có rolew Salesperson thì mới thực hiện code dưới
         // handle save by role Salesperson (Update only price, cost, discount percent for Product):
         // Nếu mà user (đã authentication, tức đã Login) mà có role là Salesperson thì thực hiện code này:
-        if(shoppingUserDetails.hasRole("Salesperson"))
+        if(!shoppingUserDetails.hasRole("Admin") && !shoppingUserDetails.hasRole("Editor"))
         {
-            try {
-                productService.saveProductPrice(product);
-                redirectAttributes.addFlashAttribute("message","The Product( name: "+product.getName()+" ) has been saved successfully!");
+            if(shoppingUserDetails.hasRole("Salesperson"))
+            {
+                try {
+                    productService.saveProductPrice(product);
+                    redirectAttributes.addFlashAttribute("message","The Product( name: "+product.getName()+" ) has been saved successfully!");
 
-                return "redirect:/products";
-            } catch (ProductNotFoundException e) {
-                throw new ProductNotFoundException(e.getMessage());
+                    return "redirect:/products";
+                } catch (ProductNotFoundException e) {
+                    throw new ProductNotFoundException(e.getMessage());
+                }
             }
         }
+
 
 
         // ---------- 1. handle product images:

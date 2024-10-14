@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en">
+<head>
+    <div th:replace="/fragment/fragments :: html_head(${pageTitle}, 'tag')">
+    </div>
+</head>
+<body>
+<!-- Header -->
+<div th:replace="/fragment/header :: admin_header">
+</div>
+<!-- END Header -->
+
+<div class="container mt-5">
+    <h1 class="mb-5">Manage Customer | [[${pageTitle}]]</h1>
+    <form th:action="@{/customers/save}"
+          th:object="${customer}" method="POST"
+          class="mx-auto border p-3 rounded"
+          style="max-width: 700px;"
+    >
+        <!-- Hidden Field ID-->
+        <input type="hidden" id="id" th:field="*{id}" />
+        <!-- Hidden Field Enabled-->
+        <input type="hidden" id="enabled" th:field="*{enabled}" />
+
+        <div class="row row-cols-1 row-cols-sm-2">
+            <div class="col mb-3">
+                <label for="firstName" class="form-label">First Name</label>
+                <input th:field="*{firstName}" type="text" class="form-control" id="firstName" required>
+            </div>
+            <div class="col mb-3">
+                <label for="lastName" class="form-label">Last Name</label>
+                <input th:field="*{lastName}" type="text" class="form-control" id="lastName" required>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input th:field="*{email}" type="text" class="form-control" id="email" required>
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Password</label>
+            <input th:field="*{password}" type="password" class="form-control" id="password" placeholder="Leave blank if you don't want to change password">
+        </div>
+        <div class="mb-3">
+            <label for="phoneNumber" class="form-label">Phone Number</label>
+            <input th:field="*{phoneNumber}" type="text" class="form-control" id="phoneNumber" required>
+        </div>
+        <div class="mb-3">
+            <label for="addressLine1" class="form-label">Address Line 1</label>
+            <input th:field="*{addressLine1}" type="text" class="form-control" id="addressLine1" required>
+        </div>
+        <div class="mb-3">
+            <label for="addressLine2" class="form-label">Address Line 2</label>
+            <input th:field="*{addressLine2}" type="text" class="form-control" id="addressLine2">
+        </div>
+        <div class="mb-3">
+            <label for="city" class="form-label">City</label>
+            <input th:field="*{city}" type="text" class="form-control" id="city">
+        </div>
+        <div class="mb-3">
+            <label for="country" class="form-label">Country</label>
+            <select th:field="*{country}" class="form-select" id="countryDropDownList">
+                <option th:each="item : ${countryList}"
+                        th:value="${item.id}"
+                        th:text="${item.name}"
+                >
+                </option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="stateInput">State/Province</label>
+            <input type="text" class="form-control" th:field="*{state}" id="stateInput" list="dataListState"/>
+            <datalist id="dataListState"></datalist>
+        </div>
+        <div class="mb-3">
+            <label for="postalCode" class="form-label">Postal Code</label>
+            <input th:field="*{postalCode}" type="text" class="form-control" id="postalCode">
+        </div>
+        <div class="row mt-3">
+            <div class="col-6">
+                <button class="btn btn-primary p-2" style="width: 100%;">Save</button>
+            </div>
+            <div class="col-6">
+                <a th:href="@{/customers}" class="btn btn-secondary p-2" style="width: 100%;">Cancel</a>
+            </div>
+        </div>
+    </form>
+
+</div>
+
+<!-- Footer -->
+<div th:replace="/fragment/footer :: admin_footer">
+</div>
+<!-- End Footer -->
+
+
+<!-- MODAL -->
+<div class="modal fade" id="warningEmailModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 id="warningEmailModelTitle" class="modal-title fs-5"></h1>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p id="warningEmailModelMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var contextPathStateSetting = "[[@{/states/}]]";
+    var countryDropDownList;
+    var stateInput;
+    var dataListState;
+    $(document).ready(function () {
+        countryDropDownList = $('#countryDropDownList');
+        stateInput = $('#stateInput');
+        dataListState = $('#dataListState');
+
+        $('#countryDropDownList').on('change', function() {
+            stateInput.val("");
+            stateInput.focus();
+
+            const countryId = countryDropDownList.val();
+            handleFillDataForDataListState(countryId);
+        })
+    })
+
+    function handleFillDataForDataListState(countryId) {
+        const requestURL = contextPathStateSetting + "list_by_country/"+countryId;
+
+        $.get(requestURL, function(responseStateList) {
+            // Trước khi thêm state vào dataListState -> clear content của dataListState trước
+            dataListState.empty();
+            $.each(responseStateList, function(index, item) {
+                $('<option>').val(item.name).text(item.name).appendTo(dataListState);
+            })
+        }).fail(function(error) {
+            console.log("Failed to load states:", error);
+        });
+    }
+
+</script>
+</body>
+</html>

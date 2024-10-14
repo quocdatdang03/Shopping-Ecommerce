@@ -62,4 +62,9 @@ public class Customer {
     @JoinColumn(name="country_id")
     private Country country;
 
+    @Transient
+    public String getFullName() {
+        return this.getFirstName()+" "+this.getLastName();
+    }
+
 }

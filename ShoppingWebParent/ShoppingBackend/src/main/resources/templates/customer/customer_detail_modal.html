@@ -1,0 +1,27 @@
+<div class="modal-header">
+    <h1>Customer details</h1>
+    <button class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+<div class="modal-body">
+    <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#nav-general" type="button" role="tab">General</button>
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#nav-address" type="button" role="tab">Address</button>
+        </div>
+    </nav>
+    <div class="tab-content mt-3" id="nav-tabContent">
+        <div class="tab-pane fade show active p-3" id="nav-general" role="tabpanel">
+            <div th:replace="customer/fragment/customer_general_readonly :: content_general_readonly">
+
+            </div>
+        </div>
+        <div class="tab-pane fade p-3" id="nav-address" role="tabpanel">
+            <div th:replace="customer/fragment/customer_address_readonly :: content_address_readonly">
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+</div>

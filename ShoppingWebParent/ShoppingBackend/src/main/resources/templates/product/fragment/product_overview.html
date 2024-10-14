@@ -11,6 +11,7 @@
             <!-- Hidden Field ID-->
             <input type="hidden" id="id" th:field="*{id}" />
 
+
             <!-- Hidden Field Category ID-->
             <input th:if="${product.category != null}" type="hidden" id="categoryId" th:value="${product.category.id}" />
 
@@ -45,8 +46,11 @@
                         </option>
                     </select>
                 </th:block>
-                <th:block sec:authorize="hasAuthority('Salesperson')">
-                    <input th:value="${product.brand.name}" type="text" class="form-control" readonly>
+                <!-- Nếu không phải là role Admin hay Editor và chỉ có role là Salesperson thì mới hiển thị readonly -->
+                <th:block sec:authorize="!hasAuthority('Admin') and !hasAuthority('Editor')">
+                    <th:block sec:authorize="hasAuthority('Salesperson')">
+                        <input th:value="${product.brand.name}" type="text" class="form-control" readonly>
+                    </th:block>
                 </th:block>
             </div>
 
@@ -67,8 +71,12 @@
                     <select th:if="${product.category==null}" th:field="*{category}" class="form-select" id="categoryList">
                     </select>
                 </th:block>
-                <th:block sec:authorize="hasAuthority('Salesperson')">
-                    <input th:value="${product.category.name}" type="text" class="form-control" readonly>
+
+                <!-- Nếu không phải là role Admin hay Editor và chỉ có role là Salesperson thì mới hiển thị readonly -->
+                <th:block sec:authorize="!hasAuthority('Admin') and !hasAuthority('Editor')">
+                    <th:block sec:authorize="hasAuthority('Salesperson')">
+                        <input th:value="${product.category.name}" type="text" class="form-control" readonly>
+                    </th:block>
                 </th:block>
             </div>
 
@@ -76,16 +84,30 @@
                 <label class="form-check-label" for="enabled">
                     Enabled
                 </label>
-                <input th:field="*{enabled}" class="form-check-input" type="checkbox" value="" id="enabled"
-                       th:disabled="${#authorization.expression('hasAuthority(''Salesperson'')')}">
+                <th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+                    <input th:field="*{enabled}" class="form-check-input" type="checkbox" value="" id="enabled">
+                </th:block>
+
+                <th:block sec:authorize="!hasAuthority('Admin') and !hasAuthority('Editor')">
+                    <th:block sec:authorize="hasAuthority('Salesperson')">
+                        <input th:field="*{enabled}" class="form-check-input" type="checkbox" value="" id="enabled" disabled>
+                    </th:block>
+                </th:block>
             </div>
 
             <div class="form-check mb-3">
                 <label class="form-check-label" for="inStock">
                     In-Stock
                 </label>
-                <input th:field="*{inStock}" class="form-check-input" type="checkbox" value="" id="inStock"
-                       th:disabled="${#authorization.expression('hasAuthority(''Salesperson'')')}">
+                <th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+                    <input th:field="*{inStock}" class="form-check-input" type="checkbox" value="" id="inStock">
+                </th:block>
+
+                <th:block sec:authorize="!hasAuthority('Admin') and !hasAuthority('Editor')">
+                    <th:block sec:authorize="hasAuthority('Salesperson')">
+                        <input th:field="*{inStock}" class="form-check-input" type="checkbox" value="" id="inStock" disabled>
+                    </th:block>
+                </th:block>
             </div>
 
             <div class="mb-3">
