@@ -20,6 +20,12 @@ public class HomeController {
     {
         List<Category> categoryList = categoryService.listAllEnabledCategoryHasNoChildren();
         model.addAttribute("categoryList", categoryList);
-        return "index";
+        return "test";
+    }
+
+    @GetMapping("/test")
+    public String showTestTemplate(Model model)
+    {
+        return "test";
     }
 }

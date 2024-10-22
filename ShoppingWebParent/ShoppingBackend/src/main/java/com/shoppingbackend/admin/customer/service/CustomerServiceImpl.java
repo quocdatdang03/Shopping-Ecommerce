@@ -58,8 +58,10 @@ public class CustomerServiceImpl implements CustomerService {
             encodePassword(customer);
         }
 
-        // Retain the first value of createdTime when edit :
+        // Retain the first value of createdTime, verificationCode, authenticationType, resetPasswordToken when edit :
         customer.setCreatedTime(existedCustomerInDB.getCreatedTime());
+        customer.setResetPasswordToken(existedCustomerInDB.getResetPasswordToken());
+        customer.setAuthenticationType(existedCustomerInDB.getAuthenticationType());
 
         return customerRepository.save(customer);
     }

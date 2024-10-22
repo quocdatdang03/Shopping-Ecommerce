@@ -1,5 +1,6 @@
 package com.shopping.web.customer.repository;
 
+import com.shopping.common.entity.AuthenticationType;
 import com.shopping.common.entity.Country;
 import com.shopping.common.entity.Customer;
 import org.assertj.core.api.Assertions;
@@ -40,6 +41,21 @@ public class CustomerRepositoryTest {
 
         Assertions.assertThat(savedCustomer).isNotNull();
         Assertions.assertThat(savedCustomer.getId()).isGreaterThan(0);
+    }
+
+    @Test
+    public void testUpdateAuthenticationType() {
+        Integer customerId = 1;
+        Customer customer = customerRepository.findById(customerId).get();
+
+        customer.setAuthenticationType(AuthenticationType.DATABASE);
+
+        Customer updatedCustomer = customerRepository.save(customer);
+
+        Assertions.assertThat(updatedCustomer).isNotNull();
+        Assertions.assertThat(updatedCustomer.getId()).isGreaterThan(0);
+        Assertions.assertThat(updatedCustomer.getAuthenticationType()).isEqualTo(AuthenticationType.FACEBOOK);
+
     }
 
 }

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       lang="en">
 <head>
     <meta charset="UTF-8">
@@ -22,10 +23,58 @@
                     <li class="nav-item">
                         <a class="nav-link" th:href="@{/users}">Users</a>
                     </li>
+                    <li class="nav-item dropdown">
+                        <!-- not yet authenticated -> show btn login -->
+                        <th:block sec:authorize="isAnonymous()">
+                            <a class="btn btn-outline-info" th:href="@{/login}">Login</a>
+                        </th:block>
+
+                        <!-- authenticated -> show customer account -->
+                        <th:block sec:authorize="isAuthenticated()">
+                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button">
+                                <!--
+                                     <span th:text="${#authentication.name}">
+                                     </span>
+                                     <span sec:authentication="name">
+                                     </span>
+                                 -->
+                                <!-- principal refers tới obj class UserDetails (cụ thể là CustomerUserDetails )-->
+                                <!-- UserDetails chỉ cập nhật info khi nó được lOGIN lại (authenticate lại)
+                                    -> do đó khi change info user ta phải tự set lại value cho property bằng tay
+                                 -->
+                                <i class="me-1 fa-solid fa-user"></i>
+                                <span sec:authentication="principal.fullName">
+                            </span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <!-- button view detail account -->
+                                <li>
+                                    <a class="dropdown-item" th:href="@{/account}">
+                                        <i class="me-2 fa-solid fa-user-gear"></i>
+                                        View account details
+                                    </a>
+                                </li>
+
+                                <li><hr class="dropdown-divider"></li>
+                                <!-- Hidden Form for logout-->
+                                <form th:action="@{/logout}" method="post" hidden="hidden" id="logoutForm">
+                                    <input type="submit" value="Logout"/>
+                                </form>
+                                <li>
+                                    <a class="dropdown-item" href="#" id="btnLogout">
+                                        <i class="me-2 fa-solid fa-arrow-right-from-bracket"></i>
+                                        Logout
+                                    </a>
+                                </li>
+                            </ul>
+                        </th:block>
+
                 </ul>
             </div>
         </div>
     </nav>
     <!-- END Header admin-->
+
+    <script th:src="@{/js/common.js}"></script>
 </body>
 </html>

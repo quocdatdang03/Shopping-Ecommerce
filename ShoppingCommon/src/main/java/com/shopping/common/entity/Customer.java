@@ -62,6 +62,15 @@ public class Customer {
     @JoinColumn(name="country_id")
     private Country country;
 
+    // Authentication Type : DATABASE, GOOGLE, FACEBOOK
+    @Enumerated(EnumType.STRING)
+    @Column(name="authentication_type", length = 20)
+    private AuthenticationType authenticationType;
+
+    // token for resetting password
+    @Column(name = "reset_password_token", length = 30)
+    private String resetPasswordToken;
+
     @Transient
     public String getFullName() {
         return this.getFirstName()+" "+this.getLastName();

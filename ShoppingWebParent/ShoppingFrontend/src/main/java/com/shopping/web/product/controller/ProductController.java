@@ -74,7 +74,7 @@ public class ProductController {
 
             model.addAttribute("pageTitle", category.getName());
 
-            return "product/products_by_category";
+            return "product/products_by_category_test";
         }
         catch(CategoryNotFoundException e)
         {

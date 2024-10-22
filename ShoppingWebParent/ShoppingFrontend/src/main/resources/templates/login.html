@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en">
+<head>
+    <div th:replace="/fragment/fragments :: html_head('Login Page', 'tag')">
+    </div>
+
+    <style>
+        .btn-login {
+            font-size: 0.9rem;
+            letter-spacing: 0.05rem;
+            padding: 0.75rem 1rem;
+        }
+
+        .btn-google {
+            color: white !important;
+            background-color: #ea4335;
+        }
+
+        .btn-facebook {
+            color: white !important;
+            background-color: #3b5998;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="mx-auto" style="max-width: 700px;">
+        <div class="border-0 shadow rounded-3 my-5">
+            <div class="p-4 p-sm-5">
+                <h2 class="text-center mb-5 fw-light fs-5">Sign In</h2>
+                <!-- Message Error -->
+                <!-- sử dụng error message authentication mặc định của Spring Security  -->
+                <div th:if="${param.error}">
+                    <div th:if="${session.SPRING_SECURITY_LAST_EXCEPTION!=null}" class="alert alert-danger d-flex align-items-center">
+                        <i class="me-2 fa-solid fa-triangle-exclamation"></i>
+                        <span th:if="${session.SPRING_SECURITY_LAST_EXCEPTION.message == 'Bad credentials'}">
+                                    Username or password is incorrect!
+                                </span>
+                        <span th:if="${session.SPRING_SECURITY_LAST_EXCEPTION.message == 'User is disabled'}">
+                                    Your account is disabled!
+                                </span>
+                    </div>
+                </div>
+                <!-- sử dụng error message do ta tự định nghĩa (CustomAuthenticationUserHandler) -->
+                <!--<div th:if="${session.authenticationErrorMessage}" class="alert alert-danger">
+                    [[${session.authenticationErrorMessage}]]
+                </div>-->
+                <!-- End Message Error -->
+
+                <!-- Message Logout-->
+                <div th:if="${param.logout}" class="alert alert-primary d-flex align-items-center">
+                    <i class="me-2 fa-solid fa-circle-check"></i>
+                    <span>You have been logout successfully!</span>
+                </div>
+                <!-- End Message Logout-->
+
+                <!-- action /login với method post sẽ tự động được xử lý logic Login bởi Spring Security  -->
+                <form th:action="@{/login}" method="post">
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" name="email" id="floatingInput" placeholder="dat@example.com" required>
+                        <label for="floatingInput">Email address</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" name="password" id="floatingPassword" placeholder="Password" required>
+                        <label for="floatingPassword">Password</label>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" name="remember-me" type="checkbox" id="rememberPasswordCheck">
+                        <label class="form-check-label" for="rememberPasswordCheck">
+                            Remember me
+                        </label>
+                    </div>
+                    <div class="d-grid">
+                        <button class="btn btn-primary btn-login text-uppercase fw-bold" type="submit">Sign in</button>
+                    </div>
+                    <div class="text-center mt-2">
+                        <p class="mb-0">or <a class="text-primary text-decoration-none" th:href="@{/forgot_password}">Forgot password</a></p>
+                    </div>
+                    <div class="text-center mt-1">
+                        <p>Don't have an account? <a class="fw-bold text-primary text-decoration-none" th:href="@{/register}">Sign Up</a></p>
+                    </div>
+                    <hr class="my-4">
+                    <div class="d-grid mb-2">
+                        <a class="btn btn-google btn-login text-uppercase fw-bold" th:href="@{/oauth2/authorization/google}">
+                            <i class="fab fa-google me-2"></i> Sign in with Google
+                        </a>
+                    </div>
+                    <div class="d-grid">
+                        <button class="btn btn-facebook btn-login text-uppercase fw-bold" type="submit">
+                            <i class="fab fa-facebook-f me-2"></i> Sign in with Facebook
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

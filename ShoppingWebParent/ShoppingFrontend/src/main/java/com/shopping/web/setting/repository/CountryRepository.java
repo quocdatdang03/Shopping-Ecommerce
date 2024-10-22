@@ -10,4 +10,7 @@ import java.util.List;
 public interface CountryRepository extends CrudRepository<Country, Integer> {
     // find all Country order by name in ascending
     public List<Country> findAllByOrderByNameAsc();
+
+    // get country by country code : E.g. : VN -> Viet Name
+    public Country findByCode(String code);
 }
